@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using record_keep_api.DBO;
 
 namespace record_keep_api.Controllers
 {
@@ -6,14 +8,19 @@ namespace record_keep_api.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        public WeatherForecastController()
+        private readonly DatabaseContext _context;
+
+        public WeatherForecastController(DatabaseContext context)
         {
+            _context = context;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok("values");
+            var collections = _context.RecordType;
+
+            return Ok(collections);
         }
     }
 }

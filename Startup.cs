@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using record_keep_api.DBO;
 
 namespace record_keep_api
 {
@@ -19,6 +21,8 @@ namespace record_keep_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<DatabaseContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("RecordKeep")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
