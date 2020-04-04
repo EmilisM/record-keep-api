@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace record_keep_api.DBO
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public partial class Record
     {
         public int Id { get; set; }

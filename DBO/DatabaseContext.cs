@@ -2,13 +2,14 @@
 
 namespace record_keep_api.DBO
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public partial class DatabaseContext : DbContext
     {
         public DatabaseContext()
         {
         }
 
-        public DatabaseContext(DbContextOptions<DatabaseContext> options)
+        public DatabaseContext(DbContextOptions options)
             : base(options)
         {
         }
