@@ -15,8 +15,8 @@ namespace record_keep_api.DBO
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public int? OwnerId { get; set; }
+        public DateTime CreationDate { get; set; }
+        public int OwnerId { get; set; }
 
         public virtual UserData Owner { get; set; }
         public virtual ICollection<CollectionRecords> CollectionRecordsCollection { get; set; }

@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using record_keep_api.DBO;
 
 namespace record_keep_api.Controllers
 {
     [ApiController]
     [Route("identity")]
+    [Authorize]
     public class IdentityController : ControllerBase
     {
         private readonly DatabaseContext _context;
@@ -17,7 +20,8 @@ namespace record_keep_api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return new JsonResult(_context.RecordType);
+            return Ok(User.Claims.Select(claim => new
+                {claim.Issuer, claim.OriginalIssuer, claim.Type, claim.Value, claim.ValueType}));
         }
     }
 }

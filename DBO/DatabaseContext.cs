@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using record_keep_api.Migrations;
 
 namespace record_keep_api.DBO
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public partial class DatabaseContext : DbContext
     {
         public DatabaseContext()
@@ -27,15 +28,16 @@ namespace record_keep_api.DBO
             {
                 entity.ToTable("collection");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("creation_date")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .IsRequired();
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
-                entity.Property(e => e.Name).HasColumnName("name");
+                entity.Property(e => e.Name).HasColumnName("name").IsRequired();
 
                 entity.Property(e => e.OwnerId).HasColumnName("owner_id");
 
@@ -47,7 +49,7 @@ namespace record_keep_api.DBO
 
             modelBuilder.Entity<CollectionRecords>(entity =>
             {
-                entity.HasKey(e => new { e.CollectionId, e.RecordId })
+                entity.HasKey(e => new {e.CollectionId, e.RecordId})
                     .HasName("collection_records_pkey");
 
                 entity.ToTable("collection_records");
@@ -73,24 +75,27 @@ namespace record_keep_api.DBO
             {
                 entity.ToTable("image");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Url).HasColumnName("url");
+                entity.Property(e => e.Url).HasColumnName("url").IsRequired();
             });
 
             modelBuilder.Entity<Record>(entity =>
             {
                 entity.ToTable("record");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Artist).HasColumnName("artist");
+                entity.Property(e => e.Artist).HasColumnName("artist").IsRequired();
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("creation_date")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .IsRequired();
 
-                entity.Property(e => e.Name).HasColumnName("name");
+                entity.Property(e => e.Name).HasColumnName("name").IsRequired();
+
+                entity.Property(e => e.Description).HasColumnName("description");
 
                 entity.Property(e => e.RecordTypeId).HasColumnName("record_type_id");
 
@@ -104,11 +109,12 @@ namespace record_keep_api.DBO
             {
                 entity.ToTable("record_type");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
-                    .HasMaxLength(50);
+                    .HasMaxLength(50)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<UserData>(entity =>
@@ -119,21 +125,24 @@ namespace record_keep_api.DBO
                     .HasName("user_data_user_name_key")
                     .IsUnique();
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreationDate)
                     .HasColumnName("creation_date")
-                    .HasColumnType("date");
+                    .HasColumnType("date")
+                    .IsRequired();
 
-                entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
+                entity.Property(e => e.PasswordHash).HasColumnName("password_hash").IsRequired();
 
-                entity.Property(e => e.PasswordSalt).HasColumnName("password_salt");
+                entity.Property(e => e.PasswordSalt).HasColumnName("password_salt").IsRequired();
 
                 entity.Property(e => e.UserName)
-                    .IsRequired()
                     .HasColumnName("user_name")
-                    .HasMaxLength(50);
+                    .HasMaxLength(50)
+                    .IsRequired();
             });
+
+            modelBuilder.Seed();
 
             OnModelCreatingPartial(modelBuilder);
         }
