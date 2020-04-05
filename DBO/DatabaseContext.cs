@@ -121,8 +121,8 @@ namespace record_keep_api.DBO
             {
                 entity.ToTable("user_data");
 
-                entity.HasIndex(e => e.UserName)
-                    .HasName("user_data_user_name_key")
+                entity.HasIndex(e => e.Email)
+                    .HasName("user_data_email_key")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
@@ -136,10 +136,12 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.PasswordSalt).HasColumnName("password_salt").IsRequired();
 
-                entity.Property(e => e.UserName)
-                    .HasColumnName("user_name")
-                    .HasMaxLength(50)
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
                     .IsRequired();
+
+                entity.Property(e => e.DisplayName)
+                    .HasColumnName("display_name");
             });
 
             modelBuilder.Seed();
