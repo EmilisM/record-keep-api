@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace record_keep_api.DBO
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
-    public partial class UserData
+    public sealed partial class UserData
     {
         public UserData()
         {
             Collection = new HashSet<Collection>();
         }
 
-        public int Id { get; set; }
+        [JsonIgnore] public int Id { get; set; }
         public string Email { get; set; }
         public string DisplayName { get; set; }
-        public string PasswordHash { get; set; }
-        public string PasswordSalt { get; set; }
+        [JsonIgnore] public string PasswordHash { get; set; }
+        [JsonIgnore] public string PasswordSalt { get; set; }
         public DateTime CreationDate { get; set; }
 
-        public virtual ICollection<Collection> Collection { get; set; }
+        [JsonIgnore] public ICollection<Collection> Collection { get; set; }
     }
 }
