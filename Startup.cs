@@ -1,8 +1,6 @@
-using System.Text.Json;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +33,6 @@ namespace record_keep_api
                         options.Authority = "http://localhost:5000";
                         options.RequireHttpsMetadata = false;
                         options.ApiName = "record-keep-api";
-                        options.ApiSecret = "record-keep-api-secret";
                     });
 
             services.AddSingleton<IAuthService, AuthService>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ namespace record_keep_api.Controllers
                 Email = user.Email,
                 PasswordHash = credentials.Hash,
                 PasswordSalt = credentials.Salt,
-                CreationDate = DateTime.Now,
+                CreationDate = DateTime.UtcNow,
             };
 
             await _context.UserData.AddAsync(newUser);
@@ -53,6 +54,23 @@ namespace record_keep_api.Controllers
             await _context.SaveChangesAsync();
 
             return Created("/api/user/create", newUser);
+        }
+
+        [HttpGet]
+        [Route("info")]
+        [Authorize]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            var subjectId = User.GetSubjectId();
+
+            var storedUser = await _context.UserData.FirstOrDefaultAsync(u => u.Id.ToString().Equals(subjectId));
+
+            if (storedUser == null)
+            {
+                throw new HttpResponseException(new UserInfoError());
+            }
+
+            return Ok(storedUser);
         }
     }
 }

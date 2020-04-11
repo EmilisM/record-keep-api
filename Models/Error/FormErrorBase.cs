@@ -2,11 +2,11 @@
 
 namespace record_keep_api.Models.Error
 {
-    public abstract class ErrorBase
+    public abstract class FormErrorBase
     {
         public List<string> Form { get; set; }
 
-        protected ErrorBase(params string[] form)
+        protected FormErrorBase(params string[] form)
         {
             Form = new List<string>(form);
         }
