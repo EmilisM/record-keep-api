@@ -10,7 +10,7 @@ namespace record_keep_api.DBO
             Users = new HashSet<UserData>();
         }
 
-        public int Id { get; set; }
+        [JsonIgnore] public int Id { get; set; }
         public string Url { get; set; }
 
         [JsonIgnore] public ICollection<UserData> Users { get; set; }

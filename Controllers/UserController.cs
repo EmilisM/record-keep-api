@@ -63,7 +63,8 @@ namespace record_keep_api.Controllers
         {
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _context.UserData.FirstOrDefaultAsync(u => u.Id.ToString().Equals(subjectId));
+            var storedUser = await _context.UserData.Include(u => u.Image)
+                .FirstOrDefaultAsync(u => u.Id.ToString().Equals(subjectId));
 
             if (storedUser == null)
             {
