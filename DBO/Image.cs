@@ -1,9 +1,18 @@
-﻿namespace record_keep_api.DBO
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+
+namespace record_keep_api.DBO
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
     public partial class Image
     {
+        public Image()
+        {
+            Users = new HashSet<UserData>();
+        }
+
         public int Id { get; set; }
         public string Url { get; set; }
+
+        [JsonIgnore] public ICollection<UserData> Users { get; set; }
     }
 }

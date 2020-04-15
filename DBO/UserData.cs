@@ -18,6 +18,9 @@ namespace record_keep_api.DBO
         [JsonIgnore] public string PasswordSalt { get; set; }
         public DateTime CreationDate { get; set; }
 
+        public int? ImageId { get; set; }
+        public Image Image { get; set; }
+
         [JsonIgnore] public ICollection<Collection> Collection { get; set; }
     }
 }

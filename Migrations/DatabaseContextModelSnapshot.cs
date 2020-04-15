@@ -191,6 +191,10 @@ namespace record_keep_api.Migrations
                     .HasColumnName("email")
                     .HasColumnType("text");
 
+                b.Property<int?>("ImageId")
+                    .HasColumnName("image_id")
+                    .HasColumnType("integer");
+
                 b.Property<string>("PasswordHash")
                     .IsRequired()
                     .HasColumnName("password_hash")
@@ -206,6 +210,8 @@ namespace record_keep_api.Migrations
                 b.HasIndex("Email")
                     .IsUnique()
                     .HasName("user_data_email_key");
+
+                b.HasIndex("ImageId");
 
                 b.ToTable("user_data");
             });
@@ -243,6 +249,14 @@ namespace record_keep_api.Migrations
                     .HasConstraintName("record_record_type_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
+            {
+                b.HasOne("record_keep_api.DBO.Image", "Image")
+                    .WithMany("Users")
+                    .HasForeignKey("ImageId")
+                    .HasConstraintName("user_data_image_id_fkey");
             });
 #pragma warning restore 612, 618
         }

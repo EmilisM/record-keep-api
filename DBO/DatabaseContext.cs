@@ -142,6 +142,13 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.DisplayName)
                     .HasColumnName("display_name");
+
+                entity.Property(e => e.ImageId).HasColumnName("image_id");
+
+                entity.HasOne(d => d.Image)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.ImageId)
+                    .HasConstraintName("user_data_image_id_fkey");
             });
 
             modelBuilder.Seed();
