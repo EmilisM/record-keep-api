@@ -6,7 +6,7 @@ namespace record_keep_api.Error
 {
     public class HttpResponseException : Exception
     {
-        public HttpResponseException(object errorObject,
+        public HttpResponseException(object errorObject = null,
             HttpStatusCode status = HttpStatusCode.InternalServerError)
         {
             Status = status;

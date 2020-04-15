@@ -41,10 +41,7 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.OwnerId).HasColumnName("owner_id");
 
-                entity.HasOne(d => d.Owner)
-                    .WithMany(p => p.Collection)
-                    .HasForeignKey(d => d.OwnerId)
-                    .HasConstraintName("collection_owner_id_fkey");
+                entity.HasOne(d => d.Owner);
             });
 
             modelBuilder.Entity<CollectionRecords>(entity =>
@@ -145,10 +142,7 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.ImageId).HasColumnName("image_id");
 
-                entity.HasOne(d => d.Image)
-                    .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.ImageId)
-                    .HasConstraintName("user_data_image_id_fkey");
+                entity.HasOne(d => d.Image);
             });
 
             modelBuilder.Seed();

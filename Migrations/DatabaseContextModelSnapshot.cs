@@ -219,9 +219,8 @@ namespace record_keep_api.Migrations
             modelBuilder.Entity("record_keep_api.DBO.Collection", b =>
             {
                 b.HasOne("record_keep_api.DBO.UserData", "Owner")
-                    .WithMany("Collection")
+                    .WithMany()
                     .HasForeignKey("OwnerId")
-                    .HasConstraintName("collection_owner_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
             });
@@ -254,9 +253,8 @@ namespace record_keep_api.Migrations
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
             {
                 b.HasOne("record_keep_api.DBO.Image", "Image")
-                    .WithMany("Users")
-                    .HasForeignKey("ImageId")
-                    .HasConstraintName("user_data_image_id_fkey");
+                    .WithMany()
+                    .HasForeignKey("ImageId");
             });
 #pragma warning restore 612, 618
         }

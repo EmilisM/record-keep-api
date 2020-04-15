@@ -7,15 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
 using record_keep_api.Error;
-using record_keep_api.Models;
-using record_keep_api.Models.Error;
+using record_keep_api.Models.Error.User;
+using record_keep_api.Models.User;
 using record_keep_auth_service;
 
 namespace record_keep_api.Controllers
 {
     [ApiController]
     [Route("api/user")]
-    public class UserController : ControllerBase
+    public class UserController : CustomControllerBase
     {
         private readonly DatabaseContext _context;
         private readonly IAuthService _authService;
@@ -27,9 +27,8 @@ namespace record_keep_api.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         [AllowAnonymous]
-        public async Task<IActionResult> CreateUser(UserRequestModel user)
+        public async Task<IActionResult> CreateUser(UserCreateModel user)
         {
             var storedUser = await _context.UserData.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
 
@@ -56,6 +55,41 @@ namespace record_keep_api.Controllers
             return Created("/api/user/create", newUser);
         }
 
+
+        [HttpPost]
+        [Route("password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(UserChangePasswordModel credentials)
+        {
+            var subjectId = User.GetSubjectId();
+
+            var storedUser = await _context.UserData.Include(u => u.Image)
+                .FirstOrDefaultAsync(UserIdPredicate(subjectId));
+
+            if (storedUser == null)
+            {
+                throw new HttpResponseException();
+            }
+
+            var isValid = _authService.ValidatePassword(credentials.OldPassword, storedUser.PasswordHash,
+                storedUser.PasswordSalt);
+
+            if (!isValid)
+            {
+                throw new HttpResponseException(new UserChangePasswordError("Invalid credentials"),
+                    HttpStatusCode.BadRequest);
+            }
+
+            var newCredentials = _authService.CreateCredentials(credentials.Password);
+
+            storedUser.PasswordHash = newCredentials.Hash;
+            storedUser.PasswordSalt = newCredentials.Salt;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [HttpGet]
         [Route("info")]
         [Authorize]
@@ -64,12 +98,49 @@ namespace record_keep_api.Controllers
             var subjectId = User.GetSubjectId();
 
             var storedUser = await _context.UserData.Include(u => u.Image)
-                .FirstOrDefaultAsync(u => u.Id.ToString().Equals(subjectId));
+                .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
             {
                 throw new HttpResponseException(new UserInfoError());
             }
+
+            return Ok(storedUser);
+        }
+
+        [HttpPatch]
+        [Route("info")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserInfo(UserInfoUpdateModel userInfo)
+        {
+            var subjectId = User.GetSubjectId();
+
+            var storedUser = await _context.UserData.Include(u => u.Image)
+                .FirstOrDefaultAsync(UserIdPredicate(subjectId));
+
+            if (storedUser == null)
+            {
+                throw new HttpResponseException(new UserInfoError());
+            }
+
+            storedUser.DisplayName = userInfo.DisplayName;
+
+            if (userInfo.ImageUrl != null)
+            {
+                if (storedUser.Image != null)
+                {
+                    storedUser.Image.Url = userInfo.ImageUrl;
+                }
+                else
+                {
+                    storedUser.Image = new Image
+                    {
+                        Url = userInfo.ImageUrl
+                    };
+                }
+            }
+
+            await _context.SaveChangesAsync();
 
             return Ok(storedUser);
         }

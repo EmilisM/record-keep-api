@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace record_keep_api.Models
+namespace record_keep_api.Models.User
 {
-    public class UserRequestModel
+    public class UserChangePasswordModel
     {
-        [Required] [EmailAddress] public string Email { get; set; }
+        [Required] public string OldPassword { get; set; }
 
         [Required]
         [MinLength(12, ErrorMessage = "Password length must be greater than 12 characters")]
