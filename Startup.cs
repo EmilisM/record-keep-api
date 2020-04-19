@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using record_keep_api.DBO;
 using record_keep_api.Error;
+using record_keep_api.Services;
 using record_keep_auth_service;
 
 namespace record_keep_api
@@ -36,6 +37,7 @@ namespace record_keep_api
                     });
 
             services.AddSingleton<IAuthService, AuthService>();
+            services.AddSingleton<IImageService, ImageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

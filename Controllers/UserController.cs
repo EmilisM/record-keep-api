@@ -20,11 +20,13 @@ namespace record_keep_api.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly IAuthService _authService;
+        private readonly IImageService _imageService;
 
-        public UserController(DatabaseContext context, IAuthService authService)
+        public UserController(DatabaseContext context, IAuthService authService, IImageService imageService)
         {
             _context = context;
             _authService = authService;
+            _imageService = imageService;
         }
 
         [HttpPost]
@@ -109,6 +111,7 @@ namespace record_keep_api.Controllers
             return Ok(storedUser);
         }
 
+        //Partial validation
         [HttpPatch]
         [Route("info")]
         [Authorize]
@@ -126,31 +129,23 @@ namespace record_keep_api.Controllers
 
             storedUser.DisplayName = userInfo.DisplayName;
 
-            if (userInfo.ImageUrl == null && storedUser.Image != null)
+            if (userInfo.Image == null && storedUser.Image != null)
             {
                 _context.Image.Remove(storedUser.Image);
             }
-            else if (userInfo.ImageUrl != null)
+            else if (userInfo.Image != null)
             {
-                var isBase64 = StaticHelpers.IsBase64(userInfo.ImageUrl);
-
-                if (!isBase64)
-                {
-                    throw new HttpResponseException(new UserInfoError
-                    {
-                        Image = "Image is not in Base64"
-                    });
-                }
+                var imageBase64 = await _imageService.GetImageCropped(userInfo.Image);
 
                 if (storedUser.Image != null)
                 {
-                    storedUser.Image.Url = userInfo.ImageUrl;
+                    storedUser.Image.Url = imageBase64;
                 }
                 else if (storedUser.Image == null)
                 {
                     storedUser.Image = new Image
                     {
-                        Url = userInfo.ImageUrl
+                        Url = imageBase64
                     };
                 }
             }
