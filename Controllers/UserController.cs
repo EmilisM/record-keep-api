@@ -9,6 +9,7 @@ using record_keep_api.DBO;
 using record_keep_api.Error;
 using record_keep_api.Models.Error.User;
 using record_keep_api.Models.User;
+using record_keep_api.Services;
 using record_keep_auth_service;
 
 namespace record_keep_api.Controllers
@@ -125,13 +126,27 @@ namespace record_keep_api.Controllers
 
             storedUser.DisplayName = userInfo.DisplayName;
 
-            if (userInfo.ImageUrl != null)
+            if (userInfo.ImageUrl == null && storedUser.Image != null)
             {
+                _context.Image.Remove(storedUser.Image);
+            }
+            else if (userInfo.ImageUrl != null)
+            {
+                var isBase64 = StaticHelpers.IsBase64(userInfo.ImageUrl);
+
+                if (!isBase64)
+                {
+                    throw new HttpResponseException(new UserInfoError
+                    {
+                        Image = "Image is not in Base64"
+                    });
+                }
+
                 if (storedUser.Image != null)
                 {
                     storedUser.Image.Url = userInfo.ImageUrl;
                 }
-                else
+                else if (storedUser.Image == null)
                 {
                     storedUser.Image = new Image
                     {

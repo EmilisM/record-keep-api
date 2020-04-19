@@ -2,5 +2,6 @@
 {
     public class UserInfoError
     {
+        public string Image { get; set; }
     }
 }
