@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
@@ -8,8 +9,8 @@ namespace record_keep_api.DBO
         public string Data { get; set; }
 
         public int CreatorId { get; set; }
-        public UserData Creator { get; set; }
+        [JsonIgnore] public UserData Creator { get; set; }
 
-        public ICollection<UserData> ProfileImages { get; set; }
+        [JsonIgnore] public ICollection<UserData> ProfileImages { get; set; }
     }
 }

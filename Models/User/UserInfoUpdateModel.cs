@@ -4,6 +4,6 @@
     {
         public string DisplayName { get; set; }
 
-        public int? ImageId { get; set; }
+        public int? ProfileImageId { get; set; }
     }
 }

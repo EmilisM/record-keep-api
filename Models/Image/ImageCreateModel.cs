@@ -2,8 +2,10 @@
 
 namespace record_keep_api.Models.Image
 {
-    public class ImageOptionsModel
+    public class ImageCreateModel
     {
+        [Required] public string Data { get; set; }
+
         [Required] public string X { get; set; }
         [Required] public string Y { get; set; }
 

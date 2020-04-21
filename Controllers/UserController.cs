@@ -18,13 +18,13 @@ namespace record_keep_api.Controllers
     [Route("api/user")]
     public class UserController : CustomControllerBase
     {
-        private readonly DatabaseContext _context;
         private readonly IAuthService _authService;
+        private readonly DatabaseContext _databaseContext;
 
         public UserController(DatabaseContext context, IAuthService authService)
         {
-            _context = context;
             _authService = authService;
+            _databaseContext = context;
         }
 
         [HttpPost]
@@ -33,7 +33,7 @@ namespace record_keep_api.Controllers
         {
             CustomValidation();
 
-            var storedUser = await _context.UserData.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
+            var storedUser = await _databaseContext.UserData.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
 
             if (storedUser != null)
             {
@@ -51,11 +51,11 @@ namespace record_keep_api.Controllers
                 CreationDate = DateTime.UtcNow,
             };
 
-            await _context.UserData.AddAsync(newUser);
+            await _databaseContext.UserData.AddAsync(newUser);
 
-            await _context.SaveChangesAsync();
+            await _databaseContext.SaveChangesAsync();
 
-            return Created("/api/user/create", newUser);
+            return Created("/api/user", newUser);
         }
 
 
@@ -68,7 +68,7 @@ namespace record_keep_api.Controllers
 
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _context.UserData.Include(u => u.ProfileImage)
+            var storedUser = await _databaseContext.UserData.Include(u => u.ProfileImage)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
@@ -90,7 +90,7 @@ namespace record_keep_api.Controllers
             storedUser.PasswordHash = newCredentials.Hash;
             storedUser.PasswordSalt = newCredentials.Salt;
 
-            await _context.SaveChangesAsync();
+            await _databaseContext.SaveChangesAsync();
 
             return Ok();
         }
@@ -102,7 +102,7 @@ namespace record_keep_api.Controllers
         {
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _context.UserData.Include(u => u.ProfileImage)
+            var storedUser = await _databaseContext.UserData.Include(u => u.ProfileImage)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
@@ -121,7 +121,7 @@ namespace record_keep_api.Controllers
         {
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _context.UserData.Include(u => u.ProfileImage)
+            var storedUser = await _databaseContext.UserData.Include(u => u.ProfileImage)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
@@ -132,16 +132,24 @@ namespace record_keep_api.Controllers
             var userInfoNew = new UserInfoUpdateModel
             {
                 DisplayName = storedUser.DisplayName,
-                ImageId = storedUser.ProfileImageId,
+                ProfileImageId = storedUser.ProfileImageId,
             };
 
             userInfo.ApplyTo(userInfoNew, ModelState);
             CustomValidation(userInfoNew);
 
-            storedUser.DisplayName = userInfoNew.DisplayName;
-            storedUser.ProfileImageId = userInfoNew.ImageId;
+            var image = await _databaseContext.Image.FirstOrDefaultAsync(u =>
+                u.CreatorId == storedUser.Id && u.Id == storedUser.Id);
 
-            await _context.SaveChangesAsync();
+            if (image == null)
+            {
+                throw new HttpResponseException(new UserInfoError(), HttpStatusCode.Forbidden);
+            }
+
+            storedUser.DisplayName = userInfoNew.DisplayName;
+            storedUser.ProfileImageId = userInfoNew.ProfileImageId;
+
+            await _databaseContext.SaveChangesAsync();
 
             return Ok(storedUser);
         }
