@@ -17,6 +17,6 @@ namespace record_keep_api.DBO
         [JsonIgnore] public int? ProfileImageId { get; set; }
         public Image ProfileImage { get; set; }
 
-        public ICollection<Image> CreatedImages { get; set; }
+        [JsonIgnore] public ICollection<Image> CreatedImages { get; set; }
     }
 }

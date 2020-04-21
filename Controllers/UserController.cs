@@ -126,28 +126,31 @@ namespace record_keep_api.Controllers
 
             if (storedUser == null)
             {
-                throw new HttpResponseException(new UserInfoError());
+                throw new HttpResponseException();
             }
 
             var userInfoNew = new UserInfoUpdateModel
             {
                 DisplayName = storedUser.DisplayName,
-                ProfileImageId = storedUser.ProfileImageId,
+                ImageId = storedUser.ProfileImageId,
             };
 
             userInfo.ApplyTo(userInfoNew, ModelState);
             CustomValidation(userInfoNew);
 
-            var image = await _databaseContext.Image.FirstOrDefaultAsync(u =>
-                u.CreatorId == storedUser.Id && u.Id == storedUser.Id);
-
-            if (image == null)
+            if (userInfoNew.ImageId != null)
             {
-                throw new HttpResponseException(new UserInfoError(), HttpStatusCode.Forbidden);
+                var image = await _databaseContext.Image.FirstOrDefaultAsync(u =>
+                    u.CreatorId == storedUser.Id && u.Id == userInfoNew.ImageId);
+
+                if (image == null)
+                {
+                    throw new HttpResponseException(new UserInfoError(), HttpStatusCode.Forbidden);
+                }
             }
 
             storedUser.DisplayName = userInfoNew.DisplayName;
-            storedUser.ProfileImageId = userInfoNew.ProfileImageId;
+            storedUser.ProfileImageId = userInfoNew.ImageId;
 
             await _databaseContext.SaveChangesAsync();
 
