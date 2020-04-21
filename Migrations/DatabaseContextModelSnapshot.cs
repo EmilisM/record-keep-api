@@ -79,12 +79,18 @@ namespace record_keep_api.Migrations
                     .HasAnnotation("Npgsql:ValueGenerationStrategy",
                         NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                b.Property<string>("Url")
+                b.Property<int>("CreatorId")
+                    .HasColumnName("creator_id")
+                    .HasColumnType("integer");
+
+                b.Property<string>("Data")
                     .IsRequired()
-                    .HasColumnName("url")
+                    .HasColumnName("data")
                     .HasColumnType("text");
 
                 b.HasKey("Id");
+
+                b.HasIndex("CreatorId");
 
                 b.ToTable("image");
             });
@@ -191,10 +197,6 @@ namespace record_keep_api.Migrations
                     .HasColumnName("email")
                     .HasColumnType("text");
 
-                b.Property<int?>("ImageId")
-                    .HasColumnName("image_id")
-                    .HasColumnType("integer");
-
                 b.Property<string>("PasswordHash")
                     .IsRequired()
                     .HasColumnName("password_hash")
@@ -205,13 +207,17 @@ namespace record_keep_api.Migrations
                     .HasColumnName("password_salt")
                     .HasColumnType("text");
 
+                b.Property<int?>("ProfileImageId")
+                    .HasColumnName("profile_image_id")
+                    .HasColumnType("integer");
+
                 b.HasKey("Id");
 
                 b.HasIndex("Email")
                     .IsUnique()
                     .HasName("user_data_email_key");
 
-                b.HasIndex("ImageId");
+                b.HasIndex("ProfileImageId");
 
                 b.ToTable("user_data");
             });
@@ -240,6 +246,16 @@ namespace record_keep_api.Migrations
                     .IsRequired();
             });
 
+            modelBuilder.Entity("record_keep_api.DBO.Image", b =>
+            {
+                b.HasOne("record_keep_api.DBO.UserData", "Creator")
+                    .WithMany("CreatedImages")
+                    .HasForeignKey("CreatorId")
+                    .HasConstraintName("image_created_image_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
             modelBuilder.Entity("record_keep_api.DBO.Record", b =>
             {
                 b.HasOne("record_keep_api.DBO.RecordType", "RecordType")
@@ -252,9 +268,10 @@ namespace record_keep_api.Migrations
 
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
             {
-                b.HasOne("record_keep_api.DBO.Image", "Image")
-                    .WithMany()
-                    .HasForeignKey("ImageId");
+                b.HasOne("record_keep_api.DBO.Image", "ProfileImage")
+                    .WithMany("ProfileImages")
+                    .HasForeignKey("ProfileImageId")
+                    .HasConstraintName("profile_image_profile_images_id_fkey");
             });
 #pragma warning restore 612, 618
         }

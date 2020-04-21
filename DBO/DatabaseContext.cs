@@ -3,7 +3,6 @@ using record_keep_api.Migrations;
 
 namespace record_keep_api.DBO
 {
-    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public partial class DatabaseContext : DbContext
     {
         public DatabaseContext()
@@ -15,12 +14,12 @@ namespace record_keep_api.DBO
         {
         }
 
-        public virtual DbSet<Collection> Collection { get; set; }
-        public virtual DbSet<CollectionRecords> CollectionRecords { get; set; }
-        public virtual DbSet<Image> Image { get; set; }
-        public virtual DbSet<Record> Record { get; set; }
-        public virtual DbSet<RecordType> RecordType { get; set; }
-        public virtual DbSet<UserData> UserData { get; set; }
+        public DbSet<Collection> Collection { get; set; }
+        public DbSet<CollectionRecords> CollectionRecords { get; set; }
+        public DbSet<Image> Image { get; set; }
+        public DbSet<Record> Record { get; set; }
+        public DbSet<RecordType> RecordType { get; set; }
+        public DbSet<UserData> UserData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -74,7 +73,12 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Url).HasColumnName("url").IsRequired();
+                entity.Property(e => e.Data).HasColumnName("data").IsRequired();
+
+                entity.Property(e => e.CreatorId).HasColumnName("creator_id").IsRequired();
+
+                entity.HasOne(e => e.Creator).WithMany(e => e.CreatedImages).HasForeignKey(e => e.CreatorId)
+                    .HasConstraintName("image_created_image_id_fkey");
             });
 
             modelBuilder.Entity<Record>(entity =>
@@ -140,9 +144,11 @@ namespace record_keep_api.DBO
                 entity.Property(e => e.DisplayName)
                     .HasColumnName("display_name");
 
-                entity.Property(e => e.ImageId).HasColumnName("image_id");
+                entity.Property(e => e.ProfileImageId).HasColumnName("profile_image_id");
 
-                entity.HasOne(d => d.Image);
+                entity.HasOne(d => d.ProfileImage).WithMany(image => image.ProfileImages)
+                    .HasForeignKey(e => e.ProfileImageId)
+                    .HasConstraintName("profile_image_profile_images_id_fkey");
             });
 
             modelBuilder.Seed();

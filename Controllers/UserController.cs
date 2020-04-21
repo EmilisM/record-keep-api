@@ -3,13 +3,13 @@ using System.Net;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
 using record_keep_api.Error;
 using record_keep_api.Models.Error.User;
 using record_keep_api.Models.User;
-using record_keep_api.Services;
 using record_keep_auth_service;
 
 namespace record_keep_api.Controllers
@@ -20,19 +20,19 @@ namespace record_keep_api.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly IAuthService _authService;
-        private readonly IImageService _imageService;
 
-        public UserController(DatabaseContext context, IAuthService authService, IImageService imageService)
+        public UserController(DatabaseContext context, IAuthService authService)
         {
             _context = context;
             _authService = authService;
-            _imageService = imageService;
         }
 
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> CreateUser(UserCreateModel user)
         {
+            CustomValidation();
+
             var storedUser = await _context.UserData.FirstOrDefaultAsync(u => u.Email.Equals(user.Email));
 
             if (storedUser != null)
@@ -64,9 +64,11 @@ namespace record_keep_api.Controllers
         [Authorize]
         public async Task<IActionResult> ChangePassword(UserChangePasswordModel credentials)
         {
+            CustomValidation();
+
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _context.UserData.Include(u => u.Image)
+            var storedUser = await _context.UserData.Include(u => u.ProfileImage)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
@@ -100,7 +102,7 @@ namespace record_keep_api.Controllers
         {
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _context.UserData.Include(u => u.Image)
+            var storedUser = await _context.UserData.Include(u => u.ProfileImage)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
@@ -111,15 +113,15 @@ namespace record_keep_api.Controllers
             return Ok(storedUser);
         }
 
-        //Partial validation
         [HttpPatch]
         [Route("info")]
         [Authorize]
-        public async Task<IActionResult> UpdateUserInfo(UserInfoUpdateModel userInfo)
+        public async Task<IActionResult> UpdateUserInfo([FromBody] JsonPatchDocument<UserInfoUpdateModel>
+            userInfo)
         {
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _context.UserData.Include(u => u.Image)
+            var storedUser = await _context.UserData.Include(u => u.ProfileImage)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
@@ -127,28 +129,17 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(new UserInfoError());
             }
 
-            storedUser.DisplayName = userInfo.DisplayName;
-
-            if (userInfo.Image == null && storedUser.Image != null)
+            var userInfoNew = new UserInfoUpdateModel
             {
-                _context.Image.Remove(storedUser.Image);
-            }
-            else if (userInfo.Image != null)
-            {
-                var imageBase64 = await _imageService.GetImageCropped(userInfo.Image);
+                DisplayName = storedUser.DisplayName,
+                ImageId = storedUser.ProfileImageId,
+            };
 
-                if (storedUser.Image != null)
-                {
-                    storedUser.Image.Url = imageBase64;
-                }
-                else if (storedUser.Image == null)
-                {
-                    storedUser.Image = new Image
-                    {
-                        Url = imageBase64
-                    };
-                }
-            }
+            userInfo.ApplyTo(userInfoNew, ModelState);
+            CustomValidation(userInfoNew);
+
+            storedUser.DisplayName = userInfoNew.DisplayName;
+            storedUser.ProfileImageId = userInfoNew.ImageId;
 
             await _context.SaveChangesAsync();
 

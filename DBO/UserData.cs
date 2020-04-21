@@ -1,18 +1,22 @@
 ﻿using System;
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
     public sealed partial class UserData
     {
         [JsonIgnore] public int Id { get; set; }
+
         public string Email { get; set; }
         public string DisplayName { get; set; }
         [JsonIgnore] public string PasswordHash { get; set; }
         [JsonIgnore] public string PasswordSalt { get; set; }
         public DateTime CreationDate { get; set; }
 
-        [JsonIgnore] public int? ImageId { get; set; }
-        public Image Image { get; set; }
+        [JsonIgnore] public int? ProfileImageId { get; set; }
+        public Image ProfileImage { get; set; }
+
+        public ICollection<Image> CreatedImages { get; set; }
     }
 }

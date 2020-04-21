@@ -5,6 +5,6 @@ namespace record_keep_api.Services
 {
     public interface IImageService
     {
-        public Task<string> GetImageCropped(ImageOptionsModel model);
+        public Task<string> GetImageCroppedAsync(ImageModel image, ImageOptionsModel options);
     }
 }

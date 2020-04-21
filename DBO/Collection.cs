@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 namespace record_keep_api.DBO
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
-    public partial class Collection
+    public sealed partial class Collection
     {
         public Collection()
         {
@@ -18,8 +17,8 @@ namespace record_keep_api.DBO
         public DateTime CreationDate { get; set; }
         public int OwnerId { get; set; }
 
-        public virtual UserData Owner { get; set; }
-        public virtual ICollection<CollectionRecords> CollectionRecordsCollection { get; set; }
-        public virtual ICollection<CollectionRecords> CollectionRecordsRecord { get; set; }
+        public UserData Owner { get; set; }
+        public ICollection<CollectionRecords> CollectionRecordsCollection { get; set; }
+        public ICollection<CollectionRecords> CollectionRecordsRecord { get; set; }
     }
 }

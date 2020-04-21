@@ -1,10 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
 
 namespace record_keep_api.DBO
 {
     public partial class Image
     {
-        [JsonIgnore] public int Id { get; set; }
-        public string Url { get; set; }
+        public int Id { get; set; }
+        public string Data { get; set; }
+
+        public int CreatorId { get; set; }
+        public UserData Creator { get; set; }
+
+        public ICollection<UserData> ProfileImages { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace record_keep_api.DBO
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual ICollection<Record> Record { get; set; }
+        public ICollection<Record> Record { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace record_keep_api.DBO
         public DateTime CreationDate { get; set; }
         public int RecordTypeId { get; set; }
 
-        public virtual RecordType RecordType { get; set; }
+        public RecordType RecordType { get; set; }
     }
 }

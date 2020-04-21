@@ -10,14 +10,14 @@ namespace record_keep_api.Services
 {
     public class ImageService : IImageService
     {
-        public async Task<string> GetImageCropped(ImageOptionsModel model)
+        public async Task<string> GetImageCroppedAsync(ImageModel image, ImageOptionsModel options)
         {
-            var imageSource = await Base64ToBitmapAsync(model.Image);
+            var imageSource = await Base64ToBitmapAsync(image.Data);
 
-            var outcomeWidth = int.TryParse(model.Width, out var width);
-            var outcomeHeight = int.TryParse(model.Height, out var height);
-            var outcomeX = int.TryParse(model.X, out var x);
-            var outcomeY = int.TryParse(model.Y, out var y);
+            var outcomeWidth = int.TryParse(options.Width, out var width);
+            var outcomeHeight = int.TryParse(options.Height, out var height);
+            var outcomeX = int.TryParse(options.X, out var x);
+            var outcomeY = int.TryParse(options.Y, out var y);
 
             if (!outcomeWidth || !outcomeHeight || !outcomeX || !outcomeY)
             {

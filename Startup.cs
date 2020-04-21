@@ -1,6 +1,7 @@
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ namespace record_keep_api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(option => option.Filters.Add(new HttpResponseActionFilter()));
+            services.AddControllers(option => option.Filters.Add(new HttpResponseActionFilter())).AddNewtonsoftJson();
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("RecordKeep")));
 
@@ -35,6 +36,8 @@ namespace record_keep_api
                         options.RequireHttpsMetadata = false;
                         options.ApiName = "record-keep-api";
                     });
+
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IImageService, ImageService>();
