@@ -9,21 +9,22 @@ namespace record_keep_api.Services
 {
     public class ImageService : IImageService
     {
-        public async Task<string> GetImageCroppedAsync(string data, string x, string y, string width, string height)
+        public async Task<string> GetImageCroppedAsync(string data, double percentageX, double percentageY,
+            double percentageWidth,
+            double percentageHeight)
         {
             var imageSource = await Base64ToBitmapAsync(data);
 
-            var outcomeWidth = int.TryParse(width, out var widthParsed);
-            var outcomeHeight = int.TryParse(height, out var heightParsed);
-            var outcomeX = int.TryParse(x, out var xParsed);
-            var outcomeY = int.TryParse(y, out var yParsed);
+            var actualHeight = imageSource.Height;
+            var actualWidth = imageSource.Width;
 
-            if (!outcomeWidth || !outcomeHeight || !outcomeX || !outcomeY)
-            {
-                return null;
-            }
+            var x = (int) Math.Round((percentageX / 100d) * actualHeight);
+            var y = (int) Math.Round((percentageY / 100d) * actualWidth);
 
-            var rectangle = new Rectangle(xParsed, yParsed, widthParsed, heightParsed);
+            var height = (int) Math.Round((percentageHeight / 100d) * actualHeight);
+            var width = (int) Math.Round((percentageWidth / 100d) * actualWidth);
+
+            var rectangle = new Rectangle(x, y, width, height);
             var dest = imageSource.Clone(rectangle, imageSource.PixelFormat);
 
             return BitmapToBase64(dest);

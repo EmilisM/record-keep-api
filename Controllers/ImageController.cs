@@ -47,7 +47,7 @@ namespace record_keep_api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateNewImage(ImageCreateModel model)
+        public async Task<IActionResult> CreateNewImage(ImageModel model)
         {
             CustomValidation();
 
@@ -77,7 +77,7 @@ namespace record_keep_api.Controllers
         [HttpPut]
         [Authorize]
         [Route("{id}")]
-        public async Task<IActionResult> UpdateImage(int id, [FromBody] ImageUpdateModel model)
+        public async Task<IActionResult> UpdateImage(int id, [FromBody] ImageModel model)
         {
             CustomValidation();
 
@@ -99,6 +99,8 @@ namespace record_keep_api.Controllers
 
             image.Data =
                 await _imageService.GetImageCroppedAsync(model.Data, model.X, model.Y, model.Width, model.Height);
+
+            await _context.SaveChangesAsync();
 
             return Ok(image);
         }
