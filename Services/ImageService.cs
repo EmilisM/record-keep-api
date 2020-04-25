@@ -18,8 +18,8 @@ namespace record_keep_api.Services
             var actualHeight = imageSource.Height;
             var actualWidth = imageSource.Width;
 
-            var x = (int) Math.Round((percentageX / 100d) * actualHeight);
-            var y = (int) Math.Round((percentageY / 100d) * actualWidth);
+            var x = (int) Math.Round((percentageX / 100d) * actualWidth);
+            var y = (int) Math.Round((percentageY / 100d) * actualHeight);
 
             var height = (int) Math.Round((percentageHeight / 100d) * actualHeight);
             var width = (int) Math.Round((percentageWidth / 100d) * actualWidth);
