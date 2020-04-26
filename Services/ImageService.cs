@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Image = System.Drawing.Image;
 
@@ -25,7 +26,7 @@ namespace record_keep_api.Services
             var width = (int) Math.Round((percentageWidth / 100d) * actualWidth);
 
             var rectangle = new Rectangle(x, y, width, height);
-            var dest = imageSource.Clone(rectangle, imageSource.PixelFormat);
+            var dest = new Bitmap(imageSource.Clone(rectangle, imageSource.PixelFormat), 128, 128);
 
             return BitmapToBase64(dest);
         }
@@ -46,7 +47,18 @@ namespace record_keep_api.Services
         private static string BitmapToBase64(Image bitmapImage)
         {
             var memoryStream = new MemoryStream();
-            bitmapImage.Save(memoryStream, ImageFormat.Png);
+
+            var encoderParam = new EncoderParameter(Encoder.Quality, 100L);
+            var encoderParams = new EncoderParameters
+            {
+                Param = new[] {encoderParam}
+            };
+
+            var encoders = ImageCodecInfo
+                .GetImageEncoders()
+                .First(t => t.MimeType == "image/jpeg");
+
+            bitmapImage.Save(memoryStream, encoders, encoderParams);
             var byteImages = memoryStream.ToArray();
 
             var base64String = Convert.ToBase64String(byteImages);

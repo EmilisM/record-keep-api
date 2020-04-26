@@ -33,7 +33,19 @@ namespace record_keep_api.Controllers
             var collections = _context
                 .Collection
                 .Include(c => c.Image)
-                .Where(collection => collection.OwnerId.ToString().Equals(id));
+                .Where(collection => collection.OwnerId.ToString().Equals(id))
+                .ToList()
+                .Select(c => new CollectionResponseModel
+                {
+                    Id = c.Id,
+                    Description = c.Description,
+                    Name = c.Name,
+                    CreationDate = c.CreationDate,
+                    RecordCount = GetCollectionRecordCount(c.Id),
+                    Image = c.Image,
+                    ImageId = c.ImageId,
+                    OwnerId = c.OwnerId
+                });
 
             return Ok(collections);
         }
@@ -49,7 +61,19 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.NotFound);
             }
 
-            return Ok(collection);
+            var customCollection = new CollectionResponseModel
+            {
+                Id = collection.Id,
+                Description = collection.Description,
+                Name = collection.Name,
+                CreationDate = collection.CreationDate,
+                RecordCount = GetCollectionRecordCount(collection.Id),
+                Image = collection.Image,
+                ImageId = collection.ImageId,
+                OwnerId = collection.OwnerId
+            };
+
+            return Ok(customCollection);
         }
 
         [HttpPost]
@@ -131,6 +155,11 @@ namespace record_keep_api.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        private int GetCollectionRecordCount(int collectionId)
+        {
+            return _context.CollectionRecords.Count(c => c.CollectionId == collectionId);
         }
     }
 }

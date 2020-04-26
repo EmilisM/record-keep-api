@@ -21,7 +21,7 @@ namespace record_keep_api.DBO
 
         [JsonIgnore] public UserData Owner { get; set; }
 
-        public int? ImageId { get; set; }
+        [JsonIgnore] public int? ImageId { get; set; }
         public Image Image { get; set; }
 
         [JsonIgnore] public ICollection<CollectionRecords> CollectionRecordsCollection { get; set; }
