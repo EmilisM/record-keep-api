@@ -40,7 +40,12 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.OwnerId).HasColumnName("owner_id");
 
-                entity.HasOne(d => d.Owner);
+                entity.HasOne(e => e.Owner);
+
+                entity.HasOne(e => e.Image)
+                    .WithMany(e => e.Collections)
+                    .HasForeignKey(e => e.ImageId)
+                    .HasConstraintName("collection_images_fkey");
             });
 
             modelBuilder.Entity<CollectionRecords>(entity =>
@@ -77,7 +82,9 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.CreatorId).HasColumnName("creator_id").IsRequired();
 
-                entity.HasOne(e => e.Creator).WithMany(e => e.CreatedImages).HasForeignKey(e => e.CreatorId)
+                entity.HasOne(e => e.Creator)
+                    .WithMany(e => e.CreatedImages)
+                    .HasForeignKey(e => e.CreatorId)
                     .HasConstraintName("image_created_image_id_fkey");
             });
 
@@ -146,9 +153,10 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.ProfileImageId).HasColumnName("profile_image_id");
 
-                entity.HasOne(d => d.ProfileImage).WithMany(image => image.ProfileImages)
+                entity.HasOne(d => d.ProfileImage)
+                    .WithMany(image => image.Profiles)
                     .HasForeignKey(e => e.ProfileImageId)
-                    .HasConstraintName("profile_image_profile_images_id_fkey");
+                    .HasConstraintName("profile_image_profiles_id_fkey");
             });
 
             modelBuilder.Seed();

@@ -2,15 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using record_keep_api.DBO;
 
 namespace record_keep_api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200426140836_AddCollectionImage")]
+    partial class AddCollectionImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace record_keep_api.Migrations
                         .HasColumnName("description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("ImageId")
+                    b.Property<int>("ImageId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -226,7 +229,9 @@ namespace record_keep_api.Migrations
                     b.HasOne("record_keep_api.DBO.Image", "Image")
                         .WithMany("Collections")
                         .HasForeignKey("ImageId")
-                        .HasConstraintName("collection_images_fkey");
+                        .HasConstraintName("collection_images_fkey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("record_keep_api.DBO.UserData", "Owner")
                         .WithMany()

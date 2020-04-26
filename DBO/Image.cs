@@ -11,6 +11,7 @@ namespace record_keep_api.DBO
         [JsonIgnore] public int CreatorId { get; set; }
         [JsonIgnore] public UserData Creator { get; set; }
 
-        [JsonIgnore] public ICollection<UserData> ProfileImages { get; set; }
+        [JsonIgnore] public ICollection<UserData> Profiles { get; set; }
+        [JsonIgnore] public ICollection<Collection> Collections { get; set; }
     }
 }

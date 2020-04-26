@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
@@ -15,10 +16,16 @@ namespace record_keep_api.DBO
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
+
         public int OwnerId { get; set; }
 
-        public UserData Owner { get; set; }
-        public ICollection<CollectionRecords> CollectionRecordsCollection { get; set; }
-        public ICollection<CollectionRecords> CollectionRecordsRecord { get; set; }
+        [JsonIgnore] public UserData Owner { get; set; }
+
+        public int? ImageId { get; set; }
+        public Image Image { get; set; }
+
+        [JsonIgnore] public ICollection<CollectionRecords> CollectionRecordsCollection { get; set; }
+
+        [JsonIgnore] public ICollection<CollectionRecords> CollectionRecordsRecord { get; set; }
     }
 }
