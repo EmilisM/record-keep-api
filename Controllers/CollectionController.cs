@@ -224,6 +224,8 @@ namespace record_keep_api.Controllers
 
             _context.Record.UpdateRange(originRecords);
 
+            _context.Collection.Remove(originCollection);
+
             await _context.SaveChangesAsync();
 
             return Ok();
