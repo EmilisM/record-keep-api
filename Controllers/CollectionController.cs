@@ -26,14 +26,16 @@ namespace record_keep_api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCollections()
+        public IActionResult GetCollections([FromQuery] string name)
         {
             var id = User.GetSubjectId();
 
             var collections = _context
                 .Collection
                 .Include(c => c.Image)
-                .Where(collection => collection.OwnerId.ToString().Equals(id))
+                .Where(collection => collection.OwnerId.ToString().Equals(id) && (string.IsNullOrWhiteSpace(name) ||
+                                                                                  collection.Name.ToLower()
+                                                                                      .Contains(name.ToLower())))
                 .ToList()
                 .Select(c => new CollectionResponseModel
                 {
