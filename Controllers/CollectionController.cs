@@ -56,7 +56,19 @@ namespace record_keep_api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetCollection(int id)
         {
-            var collection = await _context.Collection.Include(c => c.Image).FirstOrDefaultAsync(c => c.Id == id);
+            CustomValidation();
+
+            var userId = User.GetSubjectId();
+
+            var user = await _context.UserData.FirstOrDefaultAsync(UserIdPredicate(userId));
+
+            if (user == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
+            }
+
+            var collection = await _context.Collection.Include(c => c.Image)
+                .FirstOrDefaultAsync(c => c.Id == id && c.OwnerId == user.Id);
 
             if (collection == null)
             {
@@ -122,7 +134,7 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
             }
 
-            var collection = await _context.Collection.FirstOrDefaultAsync(c => c.Id == id);
+            var collection = await _context.Collection.FirstOrDefaultAsync(c => c.Id == id && c.OwnerId == user.Id);
 
             if (collection == null)
             {
@@ -159,9 +171,67 @@ namespace record_keep_api.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteCollection(int id, [FromQuery] int? destinationId)
+        {
+            CustomValidation();
+
+            var userId = User.GetSubjectId();
+
+            var user = await _context.UserData.FirstOrDefaultAsync(UserIdPredicate(userId));
+
+            if (user == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
+            }
+
+            var originCollection = await _context
+                .Collection
+                .Include(c => c.Image)
+                .FirstOrDefaultAsync(c => c.Id == id && c.OwnerId == user.Id);
+
+            if (originCollection == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.NotFound);
+            }
+
+            if (destinationId == null)
+            {
+                _context.Collection.Remove(originCollection);
+
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+
+            var destinationCollection = await _context
+                .Collection
+                .Include(c => c.Image)
+                .FirstOrDefaultAsync(c => c.Id == destinationId && c.OwnerId == user.Id);
+
+            if (destinationCollection == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.NotFound);
+            }
+
+            var originRecords = _context.Record.Where(r => r.CollectionId == originCollection.Id);
+
+            foreach (var collectionRecord in originRecords)
+            {
+                collectionRecord.CollectionId = destinationCollection.Id;
+            }
+
+            _context.Record.UpdateRange(originRecords);
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         private int GetCollectionRecordCount(int collectionId)
         {
-            return _context.CollectionRecords.Count(c => c.CollectionId == collectionId);
+            return _context.Record.Count(r => r.CollectionId == collectionId);
         }
     }
 }

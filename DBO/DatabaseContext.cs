@@ -15,7 +15,6 @@ namespace record_keep_api.DBO
         }
 
         public DbSet<Collection> Collection { get; set; }
-        public DbSet<CollectionRecords> CollectionRecords { get; set; }
         public DbSet<Image> Image { get; set; }
         public DbSet<Record> Record { get; set; }
         public DbSet<RecordType> RecordType { get; set; }
@@ -46,30 +45,6 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Collections)
                     .HasForeignKey(e => e.ImageId)
                     .HasConstraintName("collection_images_fkey");
-            });
-
-            modelBuilder.Entity<CollectionRecords>(entity =>
-            {
-                entity.HasKey(e => new {e.CollectionId, e.RecordId})
-                    .HasName("collection_records_pkey");
-
-                entity.ToTable("collection_records");
-
-                entity.Property(e => e.CollectionId).HasColumnName("collection_id");
-
-                entity.Property(e => e.RecordId).HasColumnName("record_id");
-
-                entity.HasOne(d => d.Collection)
-                    .WithMany(p => p.CollectionRecordsCollection)
-                    .HasForeignKey(d => d.CollectionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("collection_records_collection_id_fkey");
-
-                entity.HasOne(d => d.Record)
-                    .WithMany(p => p.CollectionRecordsRecord)
-                    .HasForeignKey(d => d.RecordId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("collection_records_record_id_fkey");
             });
 
             modelBuilder.Entity<Image>(entity =>
@@ -111,6 +86,20 @@ namespace record_keep_api.DBO
                     .WithMany(p => p.Record)
                     .HasForeignKey(d => d.RecordTypeId)
                     .HasConstraintName("record_record_type_id_fkey");
+
+                entity.Property(e => e.CollectionId).HasColumnName("collection_id");
+
+                entity.HasOne(e => e.Collection)
+                    .WithMany(e => e.Records)
+                    .HasForeignKey(d => d.CollectionId)
+                    .HasConstraintName("record_collection_id_fkey");
+
+                entity.Property(e => e.OwnerId).HasColumnName("owner_id");
+
+                entity.HasOne(e => e.Owner)
+                    .WithMany(e => e.Records)
+                    .HasForeignKey(e => e.OwnerId)
+                    .HasConstraintName("record_owner_id_fkey");
             });
 
             modelBuilder.Entity<RecordType>(entity =>
