@@ -17,7 +17,6 @@ namespace record_keep_api.DBO
         public DbSet<Collection> Collection { get; set; }
         public DbSet<Image> Image { get; set; }
         public DbSet<Record> Record { get; set; }
-        public DbSet<RecordType> RecordType { get; set; }
         public DbSet<UserData> UserData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -80,13 +79,6 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.Description).HasColumnName("description");
 
-                entity.Property(e => e.RecordTypeId).HasColumnName("record_type_id");
-
-                entity.HasOne(d => d.RecordType)
-                    .WithMany(p => p.Record)
-                    .HasForeignKey(d => d.RecordTypeId)
-                    .HasConstraintName("record_record_type_id_fkey");
-
                 entity.Property(e => e.CollectionId).HasColumnName("collection_id");
 
                 entity.HasOne(e => e.Collection)
@@ -100,18 +92,6 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Records)
                     .HasForeignKey(e => e.OwnerId)
                     .HasConstraintName("record_owner_id_fkey");
-            });
-
-            modelBuilder.Entity<RecordType>(entity =>
-            {
-                entity.ToTable("record_type");
-
-                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name)
-                    .HasColumnName("name")
-                    .HasMaxLength(50)
-                    .IsRequired();
             });
 
             modelBuilder.Entity<UserData>(entity =>

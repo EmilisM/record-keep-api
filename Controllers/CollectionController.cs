@@ -115,7 +115,7 @@ namespace record_keep_api.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Created("/api/user", collection);
+            return Created("/api/collection", collection);
         }
 
         [HttpPatch]

@@ -117,61 +117,13 @@ namespace record_keep_api.Migrations
                     .HasColumnName("owner_id")
                     .HasColumnType("integer");
 
-                b.Property<int>("RecordTypeId")
-                    .HasColumnName("record_type_id")
-                    .HasColumnType("integer");
-
                 b.HasKey("Id");
 
                 b.HasIndex("CollectionId");
 
                 b.HasIndex("OwnerId");
 
-                b.HasIndex("RecordTypeId");
-
                 b.ToTable("record");
-            });
-
-            modelBuilder.Entity("record_keep_api.DBO.RecordType", b =>
-            {
-                b.Property<int>("Id")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("id")
-                    .HasColumnType("integer")
-                    .HasAnnotation("Npgsql:ValueGenerationStrategy",
-                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                b.Property<string>("Name")
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasColumnType("character varying(50)")
-                    .HasMaxLength(50);
-
-                b.HasKey("Id");
-
-                b.ToTable("record_type");
-
-                b.HasData(
-                    new
-                    {
-                        Id = -1,
-                        Name = "LP"
-                    },
-                    new
-                    {
-                        Id = -2,
-                        Name = "CD"
-                    },
-                    new
-                    {
-                        Id = -3,
-                        Name = "Vinyl"
-                    },
-                    new
-                    {
-                        Id = -4,
-                        Name = "Tape"
-                    });
             });
 
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
@@ -258,13 +210,6 @@ namespace record_keep_api.Migrations
                     .WithMany("Records")
                     .HasForeignKey("OwnerId")
                     .HasConstraintName("record_owner_id_fkey")
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .IsRequired();
-
-                b.HasOne("record_keep_api.DBO.RecordType", "RecordType")
-                    .WithMany("Record")
-                    .HasForeignKey("RecordTypeId")
-                    .HasConstraintName("record_record_type_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
             });

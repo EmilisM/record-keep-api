@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
@@ -11,13 +12,10 @@ namespace record_keep_api.DBO
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }
 
-        public int RecordTypeId { get; set; }
-        public RecordType RecordType { get; set; }
-
         public int CollectionId { get; set; }
-        public Collection Collection { get; set; }
+        [JsonIgnore] public Collection Collection { get; set; }
 
-        public int OwnerId { get; set; }
-        public UserData Owner { get; set; }
+        [JsonIgnore] public int OwnerId { get; set; }
+        [JsonIgnore] public UserData Owner { get; set; }
     }
 }
