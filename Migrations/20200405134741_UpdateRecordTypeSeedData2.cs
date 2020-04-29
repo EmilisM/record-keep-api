@@ -8,8 +8,8 @@ namespace record_keep_api.Migrations
         {
             migrationBuilder.InsertData(
                 table: "record_type",
-                columns: new[] { "id", "name" },
-                values: new object[] { -4, "Tape" });
+                columns: new[] {"id", "name"},
+                values: new object[] {-4, "Tape"});
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

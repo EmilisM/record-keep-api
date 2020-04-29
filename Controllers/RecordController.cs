@@ -105,5 +105,34 @@ namespace record_keep_api.Controllers
 
             return Created("/api/record", newRecord);
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteRecord(int id)
+        {
+            CustomValidation();
+
+            var userId = User.GetSubjectId();
+
+            var user = await _databaseContext.UserData.FirstOrDefaultAsync(UserIdPredicate(userId));
+
+            if (user == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
+            }
+
+            var record = await _databaseContext.Record.FirstOrDefaultAsync(r => r.Id == id && r.OwnerId == user.Id);
+
+            if (record == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.NotFound);
+            }
+
+            _databaseContext.Record.Remove(record);
+
+            await _databaseContext.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }

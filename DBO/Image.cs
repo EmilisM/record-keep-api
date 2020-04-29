@@ -13,5 +13,6 @@ namespace record_keep_api.DBO
 
         [JsonIgnore] public ICollection<UserData> Profiles { get; set; }
         [JsonIgnore] public ICollection<Collection> Collections { get; set; }
+        [JsonIgnore] public ICollection<Record> Records { get; set; }
     }
 }

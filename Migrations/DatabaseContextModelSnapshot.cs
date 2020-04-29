@@ -108,6 +108,10 @@ namespace record_keep_api.Migrations
                     .HasColumnName("description")
                     .HasColumnType("text");
 
+                b.Property<int?>("ImageId")
+                    .HasColumnName("image_id")
+                    .HasColumnType("integer");
+
                 b.Property<string>("Name")
                     .IsRequired()
                     .HasColumnName("name")
@@ -120,6 +124,8 @@ namespace record_keep_api.Migrations
                 b.HasKey("Id");
 
                 b.HasIndex("CollectionId");
+
+                b.HasIndex("ImageId");
 
                 b.HasIndex("OwnerId");
 
@@ -205,6 +211,11 @@ namespace record_keep_api.Migrations
                     .HasConstraintName("record_collection_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
+
+                b.HasOne("record_keep_api.DBO.Image", "Image")
+                    .WithMany("Records")
+                    .HasForeignKey("ImageId")
+                    .HasConstraintName("record_image_id_fkey");
 
                 b.HasOne("record_keep_api.DBO.UserData", "Owner")
                     .WithMany("Records")

@@ -37,23 +37,21 @@ namespace record_keep_api.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_record_type", x => x.id);
-                });
+                constraints: table => { table.PrimaryKey("PK_record_type", x => x.id); });
 
             migrationBuilder.InsertData(
                 table: "record_type",
-                columns: new[] { "id", "name" },
+                columns: new[] {"id", "name"},
                 values: new object[,]
                 {
-                    { -1, "LP" },
-                    { -2, "CD" },
-                    { -3, "Vinyl" },
-                    { -4, "Tape" }
+                    {-1, "LP"},
+                    {-2, "CD"},
+                    {-3, "Vinyl"},
+                    {-4, "Tape"}
                 });
 
             migrationBuilder.CreateIndex(

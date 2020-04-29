@@ -13,49 +13,44 @@ namespace record_keep_api.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     url = table.Column<string>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_image", x => x.id);
-                });
+                constraints: table => { table.PrimaryKey("PK_image", x => x.id); });
 
             migrationBuilder.CreateTable(
                 name: "record_type",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(maxLength: 50, nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_record_type", x => x.id);
-                });
+                constraints: table => { table.PrimaryKey("PK_record_type", x => x.id); });
 
             migrationBuilder.CreateTable(
                 name: "user_data",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_name = table.Column<string>(maxLength: 50, nullable: false),
                     password_hash = table.Column<string>(nullable: false),
                     password_salt = table.Column<string>(nullable: false),
                     creation_date = table.Column<DateTime>(type: "date", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_user_data", x => x.id);
-                });
+                constraints: table => { table.PrimaryKey("PK_user_data", x => x.id); });
 
             migrationBuilder.CreateTable(
                 name: "record",
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     artist = table.Column<string>(nullable: false),
                     name = table.Column<string>(nullable: false),
                     creation_date = table.Column<DateTime>(type: "date", nullable: false),
@@ -77,7 +72,8 @@ namespace record_keep_api.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     name = table.Column<string>(nullable: false),
                     description = table.Column<string>(nullable: true),
                     creation_date = table.Column<DateTime>(type: "date", nullable: false),
@@ -103,7 +99,7 @@ namespace record_keep_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("collection_records_pkey", x => new { x.collection_id, x.record_id });
+                    table.PrimaryKey("collection_records_pkey", x => new {x.collection_id, x.record_id});
                     table.ForeignKey(
                         name: "collection_records_collection_id_fkey",
                         column: x => x.collection_id,

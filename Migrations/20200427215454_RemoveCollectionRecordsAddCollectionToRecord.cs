@@ -83,7 +83,7 @@ namespace record_keep_api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("collection_records_pkey", x => new { x.collection_id, x.record_id });
+                    table.PrimaryKey("collection_records_pkey", x => new {x.collection_id, x.record_id});
                     table.ForeignKey(
                         name: "collection_records_collection_id_fkey",
                         column: x => x.collection_id,

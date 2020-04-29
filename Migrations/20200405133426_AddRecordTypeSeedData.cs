@@ -8,11 +8,11 @@ namespace record_keep_api.Migrations
         {
             migrationBuilder.InsertData(
                 table: "record_type",
-                columns: new[] { "id", "name" },
+                columns: new[] {"id", "name"},
                 values: new object[,]
                 {
-                    { -1, "LP" },
-                    { -2, "CD" }
+                    {-1, "LP"},
+                    {-2, "CD"}
                 });
         }
 

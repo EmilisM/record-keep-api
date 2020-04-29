@@ -92,6 +92,13 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Records)
                     .HasForeignKey(e => e.OwnerId)
                     .HasConstraintName("record_owner_id_fkey");
+
+                entity.Property(e => e.ImageId).HasColumnName("image_id");
+
+                entity.HasOne(e => e.Image)
+                    .WithMany(e => e.Records)
+                    .HasForeignKey(e => e.ImageId)
+                    .HasConstraintName("record_image_id_fkey");
             });
 
             modelBuilder.Entity<UserData>(entity =>
