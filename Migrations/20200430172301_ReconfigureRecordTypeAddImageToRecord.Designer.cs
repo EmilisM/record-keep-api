@@ -10,8 +10,8 @@ using record_keep_api.DBO;
 namespace record_keep_api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20200429183857_RemoveRecordType")]
-    partial class RemoveRecordType
+    [Migration("20200430172301_ReconfigureRecordTypeAddImageToRecord")]
+    partial class ReconfigureRecordTypeAddImageToRecord
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,6 +107,10 @@ namespace record_keep_api.Migrations
                         .HasColumnName("description")
                         .HasColumnType("text");
 
+                    b.Property<int?>("ImageId")
+                        .HasColumnName("image_id")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnName("name")
@@ -116,13 +120,65 @@ namespace record_keep_api.Migrations
                         .HasColumnName("owner_id")
                         .HasColumnType("integer");
 
+                    b.Property<int>("RecordTypeId")
+                        .HasColumnName("record_type_id")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CollectionId");
 
+                    b.HasIndex("ImageId");
+
                     b.HasIndex("OwnerId");
 
+                    b.HasIndex("RecordTypeId");
+
                     b.ToTable("record");
+                });
+
+            modelBuilder.Entity("record_keep_api.DBO.RecordType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id")
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnName("name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasName("record_type_name_key");
+
+                    b.ToTable("record_type");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            Name = "LP"
+                        },
+                        new
+                        {
+                            Id = -2,
+                            Name = "CD"
+                        },
+                        new
+                        {
+                            Id = -3,
+                            Name = "Vinyl"
+                        },
+                        new
+                        {
+                            Id = -4,
+                            Name = "Tape"
+                        });
                 });
 
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
@@ -204,10 +260,22 @@ namespace record_keep_api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("record_keep_api.DBO.Image", "Image")
+                        .WithMany("Records")
+                        .HasForeignKey("ImageId")
+                        .HasConstraintName("record_image_id_fkey");
+
                     b.HasOne("record_keep_api.DBO.UserData", "Owner")
                         .WithMany("Records")
                         .HasForeignKey("OwnerId")
                         .HasConstraintName("record_owner_id_fkey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("record_keep_api.DBO.RecordType", "RecordType")
+                        .WithMany("Records")
+                        .HasForeignKey("RecordTypeId")
+                        .HasConstraintName("record_record_type_id_fkey")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

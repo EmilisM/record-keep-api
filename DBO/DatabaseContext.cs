@@ -18,6 +18,7 @@ namespace record_keep_api.DBO
         public DbSet<Image> Image { get; set; }
         public DbSet<Record> Record { get; set; }
         public DbSet<UserData> UserData { get; set; }
+        public DbSet<RecordType> RecordType { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -99,6 +100,13 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Records)
                     .HasForeignKey(e => e.ImageId)
                     .HasConstraintName("record_image_id_fkey");
+
+                entity.Property(e => e.RecordTypeId).HasColumnName("record_type_id");
+
+                entity.HasOne(e => e.RecordType)
+                    .WithMany(e => e.Records)
+                    .HasForeignKey(e => e.RecordTypeId)
+                    .HasConstraintName("record_record_type_id_fkey");
             });
 
             modelBuilder.Entity<UserData>(entity =>
@@ -133,6 +141,21 @@ namespace record_keep_api.DBO
                     .WithMany(image => image.Profiles)
                     .HasForeignKey(e => e.ProfileImageId)
                     .HasConstraintName("profile_image_profiles_id_fkey");
+            });
+
+            modelBuilder.Entity<RecordType>(entity =>
+            {
+                entity.ToTable("record_type");
+
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("record_type_name_key")
+                    .IsUnique();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .IsRequired();
             });
 
             modelBuilder.Seed();

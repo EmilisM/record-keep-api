@@ -20,5 +20,8 @@ namespace record_keep_api.DBO
 
         [JsonIgnore] public int? ImageId { get; set; }
         public Image Image { get; set; }
+
+        [JsonIgnore] public int RecordTypeId { get; set; }
+        public RecordType RecordType { get; set; }
     }
 }

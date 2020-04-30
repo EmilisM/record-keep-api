@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace record_keep_api.Migrations
 {
