@@ -57,6 +57,29 @@ namespace record_keep_api.Migrations
                 b.ToTable("collection");
             });
 
+            modelBuilder.Entity("record_keep_api.DBO.Genre", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id")
+                    .HasColumnType("integer")
+                    .HasAnnotation("Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Name")
+                    .IsUnique()
+                    .HasName("genre_name_key");
+
+                b.ToTable("genre");
+            });
+
             modelBuilder.Entity("record_keep_api.DBO.Image", b =>
             {
                 b.Property<int>("Id")
@@ -125,6 +148,10 @@ namespace record_keep_api.Migrations
                     .HasColumnName("record_type_id")
                     .HasColumnType("integer");
 
+                b.Property<int>("StyleId")
+                    .HasColumnName("style_id")
+                    .HasColumnType("integer");
+
                 b.HasKey("Id");
 
                 b.HasIndex("CollectionId");
@@ -134,6 +161,8 @@ namespace record_keep_api.Migrations
                 b.HasIndex("OwnerId");
 
                 b.HasIndex("RecordTypeId");
+
+                b.HasIndex("StyleId");
 
                 b.ToTable("record");
             });
@@ -181,6 +210,29 @@ namespace record_keep_api.Migrations
                         Id = -4,
                         Name = "Tape"
                     });
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.Style", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id")
+                    .HasColumnType("integer")
+                    .HasAnnotation("Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Name")
+                    .IsUnique()
+                    .HasName("style_name_key");
+
+                b.ToTable("style");
             });
 
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
@@ -279,6 +331,13 @@ namespace record_keep_api.Migrations
                     .WithMany("Records")
                     .HasForeignKey("RecordTypeId")
                     .HasConstraintName("record_record_type_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("record_keep_api.DBO.Style", "Style")
+                    .WithMany("Records")
+                    .HasForeignKey("StyleId")
+                    .HasConstraintName("record_style_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
             });

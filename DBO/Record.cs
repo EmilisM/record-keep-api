@@ -23,5 +23,8 @@ namespace record_keep_api.DBO
 
         [JsonIgnore] public int RecordTypeId { get; set; }
         public RecordType RecordType { get; set; }
+
+        [JsonIgnore] public int StyleId { get; set; }
+        public Style Style { get; set; }
     }
 }

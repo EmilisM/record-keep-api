@@ -19,6 +19,8 @@ namespace record_keep_api.DBO
         public DbSet<Record> Record { get; set; }
         public DbSet<UserData> UserData { get; set; }
         public DbSet<RecordType> RecordType { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Style> Styles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -107,6 +109,13 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Records)
                     .HasForeignKey(e => e.RecordTypeId)
                     .HasConstraintName("record_record_type_id_fkey");
+
+                entity.Property(e => e.StyleId).HasColumnName("style_id");
+
+                entity.HasOne(e => e.Style)
+                    .WithMany(e => e.Records)
+                    .HasForeignKey(e => e.StyleId)
+                    .HasConstraintName("record_style_id_fkey");
             });
 
             modelBuilder.Entity<UserData>(entity =>
@@ -151,6 +160,36 @@ namespace record_keep_api.DBO
 
                 entity.HasIndex(e => e.Name)
                     .HasName("record_type_name_key")
+                    .IsUnique();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<Genre>(entity =>
+            {
+                entity.ToTable("genre");
+
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("genre_name_key")
+                    .IsUnique();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity<Style>(entity =>
+            {
+                entity.ToTable("style");
+
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("style_name_key")
                     .IsUnique();
 
                 entity.Property(e => e.Name)
