@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
+using record_keep_api.Error;
 
 namespace record_keep_api.Controllers
 {
@@ -27,11 +30,16 @@ namespace record_keep_api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetGenre(int id)
+        public async Task<IActionResult> GetGenre(int id)
         {
-            var genres = _databaseContext
+            var genres = await _databaseContext
                 .Genre
                 .FirstOrDefaultAsync(genre => genre.Id == id);
+
+            if (genres == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.NotFound);
+            }
 
             return Ok(genres);
         }

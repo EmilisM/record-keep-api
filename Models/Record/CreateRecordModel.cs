@@ -11,5 +11,9 @@ namespace record_keep_api.Models.Record
         [Required] public string Description { get; set; }
 
         [Required] public int CollectionId { get; set; }
+
+        [Required] public int ImageId { get; set; }
+
+        [Required] public int RecordTypeId { get; set; }
     }
 }

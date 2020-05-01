@@ -36,7 +36,10 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
             }
 
-            var records = _databaseContext.Record.Where(record => record.OwnerId == user.Id);
+            var records = _databaseContext.Record
+                .Include(r => r.Image)
+                .Include(r => r.RecordType)
+                .Where(record => record.OwnerId == user.Id);
 
             return Ok(records);
         }
@@ -56,7 +59,10 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
             }
 
-            var record = await _databaseContext.Record.FirstOrDefaultAsync(r => r.OwnerId == user.Id);
+            var record = await _databaseContext.Record
+                .Include(r => r.Image)
+                .Include(r => r.RecordType)
+                .FirstOrDefaultAsync(r => r.OwnerId == user.Id);
 
             if (record == null)
             {
@@ -84,7 +90,15 @@ namespace record_keep_api.Controllers
                 _databaseContext.Collection.FirstOrDefaultAsync(c =>
                     c.Id == model.CollectionId && c.OwnerId == user.Id);
 
-            if (storedCollection == null)
+            var storedRecordType =
+                await _databaseContext.RecordType
+                    .FirstOrDefaultAsync(rt => rt.Id == model.RecordTypeId);
+
+            var storedImage =
+                await _databaseContext.Image
+                    .FirstOrDefaultAsync(i => i.Id == model.ImageId && i.CreatorId == user.Id);
+
+            if (storedCollection == null || storedRecordType == null || storedImage == null)
             {
                 throw new HttpResponseException(null, HttpStatusCode.BadRequest);
             }
@@ -96,7 +110,9 @@ namespace record_keep_api.Controllers
                 Description = model.Description,
                 CollectionId = storedCollection.Id,
                 OwnerId = user.Id,
-                CreationDate = DateTime.UtcNow
+                CreationDate = DateTime.UtcNow,
+                ImageId = model.ImageId,
+                RecordTypeId = storedRecordType.Id,
             };
 
             await _databaseContext.Record.AddAsync(newRecord);
