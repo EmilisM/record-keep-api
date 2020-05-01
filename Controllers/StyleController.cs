@@ -20,7 +20,7 @@ namespace record_keep_api.Controllers
         [HttpGet]
         public IActionResult GetStyles()
         {
-            var styles = _databaseContext.Styles;
+            var styles = _databaseContext.Style;
 
             return Ok(styles);
         }
@@ -30,7 +30,7 @@ namespace record_keep_api.Controllers
         public IActionResult GetStyle(int id)
         {
             var styles = _databaseContext
-                .Genres
+                .Style
                 .FirstOrDefaultAsync(style => style.Id == id);
 
             return Ok(styles);

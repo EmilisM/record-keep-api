@@ -20,7 +20,7 @@ namespace record_keep_api.Controllers
         [HttpGet]
         public IActionResult GetGenres()
         {
-            var genres = _databaseContext.Genres;
+            var genres = _databaseContext.Genre;
 
             return Ok(genres);
         }
@@ -30,7 +30,7 @@ namespace record_keep_api.Controllers
         public IActionResult GetGenre(int id)
         {
             var genres = _databaseContext
-                .Genres
+                .Genre
                 .FirstOrDefaultAsync(genre => genre.Id == id);
 
             return Ok(genres);

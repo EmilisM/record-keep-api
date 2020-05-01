@@ -19,8 +19,8 @@ namespace record_keep_api.DBO
         public DbSet<Record> Record { get; set; }
         public DbSet<UserData> UserData { get; set; }
         public DbSet<RecordType> RecordType { get; set; }
-        public DbSet<Genre> Genres { get; set; }
-        public DbSet<Style> Styles { get; set; }
+        public DbSet<Genre> Genre { get; set; }
+        public DbSet<Style> Style { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
