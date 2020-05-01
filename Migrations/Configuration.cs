@@ -110,6 +110,12 @@ namespace record_keep_api.Migrations
                     Id = -2,
                     Name = "Ambient",
                     GenreId = -2
+                },
+                new Style
+                {
+                    Id = -3,
+                    Name = "Contemporary R&B",
+                    GenreId = -3
                 }
             );
         }

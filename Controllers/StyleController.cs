@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
+using record_keep_api.Error;
 
 namespace record_keep_api.Controllers
 {
@@ -18,20 +22,27 @@ namespace record_keep_api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetStyles()
+        public IActionResult GetStyles([FromQuery] int? genreId)
         {
-            var styles = _databaseContext.Style;
+            var styles = _databaseContext.Style
+                .Include(s => s.Genre)
+                .Where(s => genreId == null || s.GenreId == genreId);
 
             return Ok(styles);
         }
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetStyle(int id)
+        public async Task<IActionResult> GetStyle(int id)
         {
-            var styles = _databaseContext
-                .Style
+            var styles = await _databaseContext
+                .Style.Include(s => s.Genre)
                 .FirstOrDefaultAsync(style => style.Id == id);
+
+            if (styles == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.NotFound);
+            }
 
             return Ok(styles);
         }

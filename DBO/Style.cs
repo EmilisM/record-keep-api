@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
@@ -7,9 +8,9 @@ namespace record_keep_api.DBO
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public int GenreId { get; set; }
+        [JsonIgnore] public int GenreId { get; set; }
         public Genre Genre { get; set; }
 
-        public ICollection<RecordStyles> RecordStyles { get; set; }
+        [JsonIgnore] public ICollection<RecordStyles> RecordStyles { get; set; }
     }
 }
