@@ -22,6 +22,8 @@ namespace record_keep_api.DBO
         public DbSet<Genre> Genre { get; set; }
         public DbSet<Style> Style { get; set; }
 
+        public DbSet<RecordStyles> RecordStyles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Collection>(entity =>
@@ -109,13 +111,6 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Records)
                     .HasForeignKey(e => e.RecordTypeId)
                     .HasConstraintName("record_record_type_id_fkey");
-
-                entity.Property(e => e.StyleId).HasColumnName("style_id");
-
-                entity.HasOne(e => e.Style)
-                    .WithMany(e => e.Records)
-                    .HasForeignKey(e => e.StyleId)
-                    .HasConstraintName("record_style_id_fkey");
             });
 
             modelBuilder.Entity<UserData>(entity =>
@@ -202,6 +197,26 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Styles)
                     .HasForeignKey(e => e.GenreId)
                     .HasConstraintName("style_genre_id_fkey");
+            });
+
+            modelBuilder.Entity<RecordStyles>(entity =>
+            {
+                entity.ToTable("record_styles");
+
+                entity.Property(e => e.RecordId).HasColumnName("record_id");
+
+                entity.Property(e => e.StyleId).HasColumnName("style_id");
+
+                entity.HasKey(e => new {e.RecordId, e.StyleId});
+
+                entity.HasOne(e => e.Record)
+                    .WithMany(e => e.RecordStyles)
+                    .HasForeignKey(e => e.RecordId).HasConstraintName("record_styles_record_id_fkey");
+
+                entity.HasOne(e => e.Style)
+                    .WithMany(e => e.RecordStyles)
+                    .HasForeignKey(e => e.StyleId)
+                    .HasConstraintName("record_styles_style_id_fkey");
             });
 
             modelBuilder.Seed();

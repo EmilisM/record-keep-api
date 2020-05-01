@@ -10,6 +10,6 @@ namespace record_keep_api.DBO
         public int GenreId { get; set; }
         public Genre Genre { get; set; }
 
-        public ICollection<Record> Records { get; set; }
+        public ICollection<RecordStyles> RecordStyles { get; set; }
     }
 }

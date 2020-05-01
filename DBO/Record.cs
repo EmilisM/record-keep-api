@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
@@ -24,7 +25,6 @@ namespace record_keep_api.DBO
         [JsonIgnore] public int RecordTypeId { get; set; }
         public RecordType RecordType { get; set; }
 
-        [JsonIgnore] public int StyleId { get; set; }
-        public Style Style { get; set; }
+        public ICollection<RecordStyles> RecordStyles { get; set; }
     }
 }

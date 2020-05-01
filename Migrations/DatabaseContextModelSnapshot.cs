@@ -148,10 +148,6 @@ namespace record_keep_api.Migrations
                     .HasColumnName("record_type_id")
                     .HasColumnType("integer");
 
-                b.Property<int>("StyleId")
-                    .HasColumnName("style_id")
-                    .HasColumnType("integer");
-
                 b.HasKey("Id");
 
                 b.HasIndex("CollectionId");
@@ -162,9 +158,24 @@ namespace record_keep_api.Migrations
 
                 b.HasIndex("RecordTypeId");
 
+                b.ToTable("record");
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.RecordStyles", b =>
+            {
+                b.Property<int>("RecordId")
+                    .HasColumnName("record_id")
+                    .HasColumnType("integer");
+
+                b.Property<int>("StyleId")
+                    .HasColumnName("style_id")
+                    .HasColumnType("integer");
+
+                b.HasKey("RecordId", "StyleId");
+
                 b.HasIndex("StyleId");
 
-                b.ToTable("record");
+                b.ToTable("record_styles");
             });
 
             modelBuilder.Entity("record_keep_api.DBO.RecordType", b =>
@@ -339,11 +350,21 @@ namespace record_keep_api.Migrations
                     .HasConstraintName("record_record_type_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.RecordStyles", b =>
+            {
+                b.HasOne("record_keep_api.DBO.Record", "Record")
+                    .WithMany("RecordStyles")
+                    .HasForeignKey("RecordId")
+                    .HasConstraintName("record_styles_record_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
                 b.HasOne("record_keep_api.DBO.Style", "Style")
-                    .WithMany("Records")
+                    .WithMany("RecordStyles")
                     .HasForeignKey("StyleId")
-                    .HasConstraintName("record_style_id_fkey")
+                    .HasConstraintName("record_styles_style_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
             });
