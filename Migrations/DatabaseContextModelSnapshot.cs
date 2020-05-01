@@ -221,12 +221,18 @@ namespace record_keep_api.Migrations
                     .HasAnnotation("Npgsql:ValueGenerationStrategy",
                         NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                b.Property<int>("GenreId")
+                    .HasColumnName("genre_id")
+                    .HasColumnType("integer");
+
                 b.Property<string>("Name")
                     .IsRequired()
                     .HasColumnName("name")
                     .HasColumnType("text");
 
                 b.HasKey("Id");
+
+                b.HasIndex("GenreId");
 
                 b.HasIndex("Name")
                     .IsUnique()
@@ -338,6 +344,16 @@ namespace record_keep_api.Migrations
                     .WithMany("Records")
                     .HasForeignKey("StyleId")
                     .HasConstraintName("record_style_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.Style", b =>
+            {
+                b.HasOne("record_keep_api.DBO.Genre", "Genre")
+                    .WithMany("Styles")
+                    .HasForeignKey("GenreId")
+                    .HasConstraintName("style_genre_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
             });

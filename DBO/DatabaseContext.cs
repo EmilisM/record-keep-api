@@ -195,6 +195,13 @@ namespace record_keep_api.DBO
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .IsRequired();
+
+                entity.Property(e => e.GenreId).HasColumnName("genre_id");
+
+                entity.HasOne(e => e.Genre)
+                    .WithMany(e => e.Styles)
+                    .HasForeignKey(e => e.GenreId)
+                    .HasConstraintName("style_genre_id_fkey");
             });
 
             modelBuilder.Seed();

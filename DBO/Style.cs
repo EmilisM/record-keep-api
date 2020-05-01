@@ -7,6 +7,8 @@ namespace record_keep_api.DBO
         public int Id { get; set; }
         public string Name { get; set; }
 
+        public int GenreId { get; set; }
+        public Genre Genre { get; set; }
 
         public ICollection<Record> Records { get; set; }
     }
