@@ -78,6 +78,73 @@ namespace record_keep_api.Migrations
                     .HasName("genre_name_key");
 
                 b.ToTable("genre");
+
+                b.HasData(
+                    new
+                    {
+                        Id = -1,
+                        Name = "Rock"
+                    },
+                    new
+                    {
+                        Id = -2,
+                        Name = "Electronic"
+                    },
+                    new
+                    {
+                        Id = -3,
+                        Name = "Soul/R&B"
+                    },
+                    new
+                    {
+                        Id = -4,
+                        Name = "Funk"
+                    },
+                    new
+                    {
+                        Id = -5,
+                        Name = "Country"
+                    },
+                    new
+                    {
+                        Id = -6,
+                        Name = "Latin"
+                    },
+                    new
+                    {
+                        Id = -7,
+                        Name = "Reggae"
+                    },
+                    new
+                    {
+                        Id = -8,
+                        Name = "Hip hop music"
+                    },
+                    new
+                    {
+                        Id = -9,
+                        Name = "Jazz"
+                    },
+                    new
+                    {
+                        Id = -10,
+                        Name = "Pop"
+                    },
+                    new
+                    {
+                        Id = -11,
+                        Name = "Classical"
+                    },
+                    new
+                    {
+                        Id = -12,
+                        Name = "Avant-garde"
+                    },
+                    new
+                    {
+                        Id = -13,
+                        Name = "Blues"
+                    });
             });
 
             modelBuilder.Entity("record_keep_api.DBO.Image", b =>
@@ -250,6 +317,20 @@ namespace record_keep_api.Migrations
                     .HasName("style_name_key");
 
                 b.ToTable("style");
+
+                b.HasData(
+                    new
+                    {
+                        Id = -1,
+                        GenreId = -2,
+                        Name = "IDM"
+                    },
+                    new
+                    {
+                        Id = -2,
+                        GenreId = -2,
+                        Name = "Ambient"
+                    });
             });
 
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
