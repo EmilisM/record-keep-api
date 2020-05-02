@@ -100,7 +100,7 @@ namespace record_keep_api.Controllers
 
             var storedStyles = _databaseContext.Style.Where(s => model.StyleIds.Contains(s.Id));
 
-            if (storedCollection == null || storedRecordType == null || storedImage == null || storedStyles == null)
+            if (storedCollection == null || storedRecordType == null || storedStyles == null)
             {
                 throw new HttpResponseException(null, HttpStatusCode.BadRequest);
             }
@@ -113,7 +113,7 @@ namespace record_keep_api.Controllers
                 CollectionId = storedCollection.Id,
                 OwnerId = user.Id,
                 CreationDate = DateTime.UtcNow,
-                ImageId = model.ImageId,
+                ImageId = storedImage?.Id,
                 RecordTypeId = storedRecordType.Id,
             };
 
@@ -121,7 +121,7 @@ namespace record_keep_api.Controllers
 
             var newRecordStyles = storedStyles.Select(s => new RecordStyles
             {
-                RecordId = newRecord.Id,
+                Record = newRecord,
                 StyleId = s.Id
             });
 

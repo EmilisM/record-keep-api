@@ -12,10 +12,10 @@ namespace record_keep_api.Models.Record
 
         [Required] public int CollectionId { get; set; }
 
-        [Required] public int ImageId { get; set; }
+        public int? ImageId { get; set; }
 
         [Required] public int RecordTypeId { get; set; }
 
-        [Required] public int[] StyleIds { get; set; }
+        public int[] StyleIds { get; set; }
     }
 }
