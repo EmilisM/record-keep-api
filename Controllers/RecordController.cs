@@ -98,7 +98,9 @@ namespace record_keep_api.Controllers
                 await _databaseContext.Image
                     .FirstOrDefaultAsync(i => i.Id == model.ImageId && i.CreatorId == user.Id);
 
-            if (storedCollection == null || storedRecordType == null || storedImage == null)
+            var storedStyles = _databaseContext.Style.Where(s => model.StyleIds.Contains(s.Id));
+
+            if (storedCollection == null || storedRecordType == null || storedImage == null || storedStyles == null)
             {
                 throw new HttpResponseException(null, HttpStatusCode.BadRequest);
             }
@@ -116,6 +118,14 @@ namespace record_keep_api.Controllers
             };
 
             await _databaseContext.Record.AddAsync(newRecord);
+
+            var newRecordStyles = storedStyles.Select(s => new RecordStyles
+            {
+                RecordId = newRecord.Id,
+                StyleId = s.Id
+            });
+
+            await _databaseContext.RecordStyles.AddRangeAsync(newRecordStyles);
 
             await _databaseContext.SaveChangesAsync();
 

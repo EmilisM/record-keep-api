@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +30,9 @@ namespace record_keep_api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetRecordType(int id)
+        public async Task<IActionResult> GetRecordType(int id)
         {
-            var recordType = _databaseContext
+            var recordType = await _databaseContext
                 .RecordType
                 .FirstOrDefaultAsync((rt => rt.Id == id));
 
