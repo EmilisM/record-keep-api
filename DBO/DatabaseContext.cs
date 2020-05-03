@@ -111,6 +111,13 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Records)
                     .HasForeignKey(e => e.RecordTypeId)
                     .HasConstraintName("record_record_type_id_fkey");
+
+                entity.Property(e => e.Year)
+                    .HasColumnName("year")
+                    .HasColumnType("date")
+                    .IsRequired();
+
+                entity.Property(e => e.Label).HasColumnName("label").IsRequired();
             });
 
             modelBuilder.Entity<UserData>(entity =>

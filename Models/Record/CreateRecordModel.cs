@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace record_keep_api.Models.Record
 {
@@ -17,5 +18,9 @@ namespace record_keep_api.Models.Record
         [Required] public int RecordTypeId { get; set; }
 
         public int[] StyleIds { get; set; }
+
+        [Required] public DateTime Year { get; set; }
+
+        [Required] public string Label { get; set; }
     }
 }

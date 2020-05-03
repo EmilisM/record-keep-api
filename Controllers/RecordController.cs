@@ -115,6 +115,8 @@ namespace record_keep_api.Controllers
                 CreationDate = DateTime.UtcNow,
                 ImageId = storedImage?.Id,
                 RecordTypeId = storedRecordType.Id,
+                Label = model.Label,
+                Year = model.Year,
             };
 
             await _databaseContext.Record.AddAsync(newRecord);
