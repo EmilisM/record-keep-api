@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
@@ -25,7 +26,7 @@ namespace record_keep_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRecords()
+        public async Task<IActionResult> GetRecords([FromQuery] string collectionId)
         {
             var userId = User.GetSubjectId();
 
@@ -39,7 +40,11 @@ namespace record_keep_api.Controllers
             var records = _databaseContext.Record
                 .Include(r => r.Image)
                 .Include(r => r.RecordType)
-                .Where(record => record.OwnerId == user.Id);
+                .Include(r => r.RecordStyles)
+                .ThenInclude(rs => rs.Style)
+                .ThenInclude(s => s.Genre)
+                .Where(record => record.OwnerId == user.Id && string.IsNullOrWhiteSpace(collectionId) ||
+                                 record.CollectionId.ToString() == collectionId);
 
             return Ok(records);
         }
@@ -62,6 +67,9 @@ namespace record_keep_api.Controllers
             var record = await _databaseContext.Record
                 .Include(r => r.Image)
                 .Include(r => r.RecordType)
+                .Include(r => r.RecordStyles)
+                .ThenInclude(rs => rs.Style)
+                .ThenInclude(s => s.Genre)
                 .FirstOrDefaultAsync(r => r.OwnerId == user.Id);
 
             if (record == null)
@@ -161,6 +169,101 @@ namespace record_keep_api.Controllers
             await _databaseContext.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpPatch]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateRecord(int id, [FromBody] JsonPatchDocument<UpdateRecordModel> model)
+        {
+            CustomValidation();
+
+            var userId = User.GetSubjectId();
+
+            var user = await _databaseContext.UserData.FirstOrDefaultAsync(UserIdPredicate(userId));
+
+            if (user == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
+            }
+
+            var recordToUpdate = await _databaseContext.Record
+                .Include(r => r.Image)
+                .Include(r => r.RecordType)
+                .FirstOrDefaultAsync(r => r.Id == id && r.OwnerId == user.Id);
+
+            var recordStyles = _databaseContext.RecordStyles
+                .Include(rs => rs.Style)
+                .Where(r => r.RecordId == id);
+
+            if (recordToUpdate == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.NotFound);
+            }
+
+            var newModel = new UpdateRecordModel
+            {
+                Artist = recordToUpdate.Artist,
+                Name = recordToUpdate.Name,
+                Description = recordToUpdate.Description,
+                Label = recordToUpdate.Label,
+                Year = recordToUpdate.Year,
+                RecordTypeId = recordToUpdate.RecordTypeId,
+                ImageId = recordToUpdate.ImageId,
+                StyleIds = recordStyles.Select(rs => rs.StyleId).ToArray()
+            };
+
+            model.ApplyTo(newModel, ModelState);
+            CustomValidation(newModel);
+
+            if (newModel.ImageId != null)
+            {
+                var image = await _databaseContext.Image.FirstOrDefaultAsync(i =>
+                    i.Id == newModel.ImageId && i.CreatorId == user.Id);
+
+                if (image == null)
+                {
+                    throw new HttpResponseException(null, HttpStatusCode.Forbidden);
+                }
+            }
+
+            var newRecordType = await _databaseContext.RecordType
+                .FirstOrDefaultAsync(rt => rt.Id == newModel.RecordTypeId);
+
+            var newStyles = _databaseContext.Style
+                .Where(s => newModel.StyleIds.Contains(s.Id));
+
+            var firstNewStyle = await newStyles.FirstOrDefaultAsync();
+
+            if (newRecordType == null || newStyles.Count() != newModel.StyleIds.Length ||
+                firstNewStyle == null || !newStyles.All(s => s.GenreId == firstNewStyle.GenreId))
+            {
+                throw new HttpResponseException(null, HttpStatusCode.BadRequest);
+            }
+
+            //TODO: Avoid dirty update
+            _databaseContext.RecordStyles.RemoveRange(recordStyles);
+
+            var newRecordStyles = newStyles.Select(s => new RecordStyles
+            {
+                RecordId = recordToUpdate.Id,
+                StyleId = s.Id
+            });
+
+            await _databaseContext.RecordStyles.AddRangeAsync(newRecordStyles);
+
+            //TODO: Automapper
+            recordToUpdate.Artist = newModel.Artist;
+            recordToUpdate.Name = newModel.Name;
+            recordToUpdate.Description = newModel.Description;
+            recordToUpdate.Label = newModel.Label;
+            recordToUpdate.Year = newModel.Year;
+
+            recordToUpdate.ImageId = newModel.ImageId;
+            recordToUpdate.RecordTypeId = newRecordType.Id;
+
+            await _databaseContext.SaveChangesAsync();
+
+            return Ok(recordToUpdate);
         }
     }
 }

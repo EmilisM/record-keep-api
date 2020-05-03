@@ -33,6 +33,7 @@ namespace record_keep_api.Controllers
             var collections = _context
                 .Collection
                 .Include(c => c.Image)
+                .Include(c => c.Records)
                 .Where(collection => collection.OwnerId.ToString().Equals(id) && (string.IsNullOrWhiteSpace(name) ||
                                                                                   collection.Name.ToLower()
                                                                                       .Contains(name.ToLower())))
@@ -43,7 +44,7 @@ namespace record_keep_api.Controllers
                     Description = c.Description,
                     Name = c.Name,
                     CreationDate = c.CreationDate,
-                    RecordCount = GetCollectionRecordCount(c.Id),
+                    RecordCount = c.Records.Count,
                     Image = c.Image,
                     ImageId = c.ImageId,
                     OwnerId = c.OwnerId
@@ -67,7 +68,9 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
             }
 
-            var collection = await _context.Collection.Include(c => c.Image)
+            var collection = await _context.Collection
+                .Include(c => c.Image)
+                .Include(c => c.Records)
                 .FirstOrDefaultAsync(c => c.Id == id && c.OwnerId == user.Id);
 
             if (collection == null)
@@ -81,7 +84,7 @@ namespace record_keep_api.Controllers
                 Description = collection.Description,
                 Name = collection.Name,
                 CreationDate = collection.CreationDate,
-                RecordCount = GetCollectionRecordCount(collection.Id),
+                RecordCount = collection.Records.Count,
                 Image = collection.Image,
                 ImageId = collection.ImageId,
                 OwnerId = collection.OwnerId
@@ -229,11 +232,6 @@ namespace record_keep_api.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-        }
-
-        private int GetCollectionRecordCount(int collectionId)
-        {
-            return _context.Record.Count(r => r.CollectionId == collectionId);
         }
     }
 }

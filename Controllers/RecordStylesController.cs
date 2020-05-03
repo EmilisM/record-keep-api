@@ -39,6 +39,7 @@ namespace record_keep_api.Controllers
             var recordStyles = _databaseContext.RecordStyles
                 .Include(rs => rs.Record)
                 .Include(rs => rs.Style)
+                .ThenInclude(s => s.Genre)
                 .Where(rs =>
                     rs.Record.OwnerId == storedUser.Id && recordId == null ||
                     rs.RecordId == recordId && styleId == null || rs.StyleId == styleId);
