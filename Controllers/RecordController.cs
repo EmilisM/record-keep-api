@@ -73,7 +73,7 @@ namespace record_keep_api.Controllers
                 .Include(r => r.RecordStyles)
                 .ThenInclude(rs => rs.Style)
                 .ThenInclude(s => s.Genre)
-                .FirstOrDefaultAsync(r => r.OwnerId == user.Id);
+                .FirstOrDefaultAsync(r => r.OwnerId == user.Id && r.Id == id);
 
             if (record == null)
             {

@@ -69,7 +69,7 @@ namespace record_keep_api.Migrations
                 new Genre
                 {
                     Id = -8,
-                    Name = "Hip hop music"
+                    Name = "Hip hop"
                 },
                 new Genre
                 {
