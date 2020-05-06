@@ -26,7 +26,7 @@ namespace record_keep_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRecords([FromQuery] string collectionId)
+        public async Task<IActionResult> GetRecords([FromQuery] string collectionId, [FromQuery] string query)
         {
             var userId = User.GetSubjectId();
 
@@ -43,8 +43,11 @@ namespace record_keep_api.Controllers
                 .Include(r => r.RecordStyles)
                 .ThenInclude(rs => rs.Style)
                 .ThenInclude(s => s.Genre)
-                .Where(record => record.OwnerId == user.Id && string.IsNullOrWhiteSpace(collectionId) ||
-                                 record.CollectionId.ToString() == collectionId);
+                .Where(record => record.OwnerId == user.Id && (string.IsNullOrWhiteSpace(collectionId) ||
+                                                               record.CollectionId.ToString() == collectionId) &&
+                                 (string.IsNullOrWhiteSpace(query) ||
+                                  record.Artist.ToLower().Contains(query.ToLower()) ||
+                                  record.Name.ToLower().Contains(query.ToLower())));
 
             return Ok(records);
         }
