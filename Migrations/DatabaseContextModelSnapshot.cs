@@ -118,7 +118,7 @@ namespace record_keep_api.Migrations
                     new
                     {
                         Id = -8,
-                        Name = "Hip hop music"
+                        Name = "Hip hop"
                     },
                     new
                     {
