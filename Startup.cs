@@ -41,6 +41,7 @@ namespace record_keep_api
 
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<IImageService, ImageService>();
+            services.AddScoped<IUserActivityService, UserActivityService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

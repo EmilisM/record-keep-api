@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
 using record_keep_api.Error;
 using record_keep_api.Models.Image;
+using record_keep_api.Models.UserActivity;
 using record_keep_api.Services;
 
 namespace record_keep_api.Controllers
@@ -18,11 +19,14 @@ namespace record_keep_api.Controllers
     {
         private readonly IImageService _imageService;
         private readonly DatabaseContext _context;
+        private readonly IUserActivityService _userActivityService;
 
-        public ImageController(IImageService imageService, DatabaseContext databaseContext, DatabaseContext context)
+        public ImageController(IImageService imageService, DatabaseContext databaseContext, DatabaseContext context,
+            IUserActivityService userActivityService)
         {
             _imageService = imageService;
             _context = context;
+            _userActivityService = userActivityService;
         }
 
         [HttpGet]
@@ -71,6 +75,8 @@ namespace record_keep_api.Controllers
 
             await _context.SaveChangesAsync();
 
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.ImageCreate, storedUsed.Id);
+
             return Created("/api/image", image);
         }
 
@@ -101,6 +107,8 @@ namespace record_keep_api.Controllers
                 await _imageService.GetImageCroppedAsync(model.Data, model.X, model.Y, model.Width, model.Height);
 
             await _context.SaveChangesAsync();
+
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.ImageUpdate, storedUsed.Id);
 
             return Ok(image);
         }

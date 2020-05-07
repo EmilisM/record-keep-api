@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
-    public sealed partial class Collection
+    public partial class Collection
     {
         public Collection()
         {
@@ -22,5 +22,7 @@ namespace record_keep_api.DBO
         public Image Image { get; set; }
 
         [JsonIgnore] public ICollection<Record> Records { get; set; }
+
+        [JsonIgnore] public ICollection<UserActivity> Activities { get; set; }
     }
 }

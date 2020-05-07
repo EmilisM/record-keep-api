@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
 using record_keep_api.Error;
 using record_keep_api.Models.Collection;
+using record_keep_api.Models.UserActivity;
+using record_keep_api.Services;
 
 namespace record_keep_api.Controllers
 {
@@ -19,10 +21,12 @@ namespace record_keep_api.Controllers
     public class CollectionController : CustomControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IUserActivityService _userActivityService;
 
-        public CollectionController(DatabaseContext context)
+        public CollectionController(DatabaseContext context, IUserActivityService userActivityService)
         {
             _context = context;
+            _userActivityService = userActivityService;
         }
 
         [HttpGet]
@@ -118,6 +122,9 @@ namespace record_keep_api.Controllers
 
             await _context.SaveChangesAsync();
 
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.CollectionCreate, user.Id,
+                collection);
+
             return Created("/api/collection", collection);
         }
 
@@ -171,6 +178,9 @@ namespace record_keep_api.Controllers
 
             await _context.SaveChangesAsync();
 
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.CollectionUpdate, user.Id,
+                collection);
+
             return Ok();
         }
 
@@ -205,6 +215,8 @@ namespace record_keep_api.Controllers
 
                 await _context.SaveChangesAsync();
 
+                await _userActivityService.CreateActivityAsync(UserActivityActionName.CollectionDelete, user.Id);
+
                 return Ok();
             }
 
@@ -230,6 +242,9 @@ namespace record_keep_api.Controllers
             _context.Collection.Remove(originCollection);
 
             await _context.SaveChangesAsync();
+
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.CollectionDeleteWithMove, user.Id,
+                destinationCollection);
 
             return Ok();
         }

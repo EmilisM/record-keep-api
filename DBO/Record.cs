@@ -28,5 +28,7 @@ namespace record_keep_api.DBO
         public RecordType RecordType { get; set; }
 
         public ICollection<RecordStyles> RecordStyles { get; set; }
+
+        [JsonIgnore] public ICollection<UserActivity> RecordActivities { get; set; }
     }
 }

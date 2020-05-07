@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using record_keep_api.Migrations;
+using record_keep_api.Models.UserActivity;
 
 namespace record_keep_api.DBO
 {
@@ -21,8 +23,9 @@ namespace record_keep_api.DBO
         public DbSet<RecordType> RecordType { get; set; }
         public DbSet<Genre> Genre { get; set; }
         public DbSet<Style> Style { get; set; }
-
         public DbSet<RecordStyles> RecordStyles { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
+        public DbSet<UserActivityAction> UserActivityActions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -224,6 +227,60 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.RecordStyles)
                     .HasForeignKey(e => e.StyleId)
                     .HasConstraintName("record_styles_style_id_fkey");
+            });
+
+
+            modelBuilder.Entity<UserActivityAction>(entity =>
+            {
+                entity.ToTable("user_activity_action");
+
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (UserActivityActionName) Enum.Parse(typeof(UserActivityActionName), v));
+            });
+
+            modelBuilder.Entity<UserActivity>(entity =>
+            {
+                entity.ToTable("user_activity");
+
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+
+                entity.Property(e => e.TimeStamp)
+                    .HasColumnName("time_stamp")
+                    .HasColumnType("date")
+                    .IsRequired();
+
+                entity.Property(e => e.OwnerId).HasColumnName("owner_id");
+
+                entity.HasOne(e => e.Owner)
+                    .WithMany(e => e.UserActivities)
+                    .HasForeignKey(e => e.OwnerId)
+                    .HasConstraintName("user_activity_owner_id_fkey");
+
+                entity.Property(e => e.ActionId).HasColumnName("action_id");
+
+                entity.HasOne(e => e.Action)
+                    .WithMany(e => e.Activities)
+                    .HasForeignKey(e => e.ActionId)
+                    .HasConstraintName("user_activity_action_id_fkey");
+
+                entity.Property(e => e.CollectionId).HasColumnName("collection_id");
+
+                entity.HasOne(e => e.Collection)
+                    .WithMany(e => e.Activities)
+                    .HasForeignKey(e => e.CollectionId)
+                    .HasConstraintName("user_activity_collection_id_fkey");
+
+                entity.Property(e => e.RecordId).HasColumnName("record_id");
+
+                entity.HasOne(e => e.Record)
+                    .WithMany(e => e.RecordActivities)
+                    .HasForeignKey(e => e.RecordId)
+                    .HasConstraintName("user_activity_record_id_fkey");
             });
 
             modelBuilder.Seed();

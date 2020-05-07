@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
 using record_keep_api.Error;
 using record_keep_api.Models.Record;
+using record_keep_api.Models.UserActivity;
+using record_keep_api.Services;
 
 namespace record_keep_api.Controllers
 {
@@ -19,10 +21,12 @@ namespace record_keep_api.Controllers
     public class RecordController : CustomControllerBase
     {
         private readonly DatabaseContext _databaseContext;
+        private readonly IUserActivityService _userActivityService;
 
-        public RecordController(DatabaseContext databaseContext)
+        public RecordController(DatabaseContext databaseContext, IUserActivityService userActivityService)
         {
             _databaseContext = databaseContext;
+            _userActivityService = userActivityService;
         }
 
         [HttpGet]
@@ -142,6 +146,9 @@ namespace record_keep_api.Controllers
 
             await _databaseContext.SaveChangesAsync();
 
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.RecordCreate, user.Id,
+                record: newRecord);
+
             return Created("/api/record", newRecord);
         }
 
@@ -170,6 +177,8 @@ namespace record_keep_api.Controllers
             _databaseContext.Record.Remove(record);
 
             await _databaseContext.SaveChangesAsync();
+
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.RecordDelete, user.Id);
 
             return Ok();
         }
@@ -265,6 +274,9 @@ namespace record_keep_api.Controllers
             recordToUpdate.RecordTypeId = newRecordType.Id;
 
             await _databaseContext.SaveChangesAsync();
+
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.RecordUpdate, user.Id,
+                record: recordToUpdate);
 
             return Ok(recordToUpdate);
         }

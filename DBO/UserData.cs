@@ -19,5 +19,7 @@ namespace record_keep_api.DBO
 
         [JsonIgnore] public ICollection<Image> CreatedImages { get; set; }
         [JsonIgnore] public ICollection<Record> Records { get; set; }
+
+        public ICollection<UserActivity> UserActivities { get; set; }
     }
 }

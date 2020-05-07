@@ -348,6 +348,124 @@ namespace record_keep_api.Migrations
                     });
             });
 
+            modelBuilder.Entity("record_keep_api.DBO.UserActivity", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id")
+                    .HasColumnType("integer")
+                    .HasAnnotation("Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                b.Property<int>("ActionId")
+                    .HasColumnName("action_id")
+                    .HasColumnType("integer");
+
+                b.Property<int?>("CollectionId")
+                    .HasColumnName("collection_id")
+                    .HasColumnType("integer");
+
+                b.Property<int>("OwnerId")
+                    .HasColumnName("owner_id")
+                    .HasColumnType("integer");
+
+                b.Property<int?>("RecordId")
+                    .HasColumnName("record_id")
+                    .HasColumnType("integer");
+
+                b.Property<DateTime>("TimeStamp")
+                    .HasColumnName("time_stamp")
+                    .HasColumnType("date");
+
+                b.HasKey("Id");
+
+                b.HasIndex("ActionId");
+
+                b.HasIndex("CollectionId");
+
+                b.HasIndex("OwnerId");
+
+                b.HasIndex("RecordId");
+
+                b.ToTable("user_activity");
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.UserActivityAction", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id")
+                    .HasColumnType("integer")
+                    .HasAnnotation("Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.ToTable("user_activity_action");
+
+                b.HasData(
+                    new
+                    {
+                        Id = -1,
+                        Name = "CollectionCreate"
+                    },
+                    new
+                    {
+                        Id = -2,
+                        Name = "CollectionUpdate"
+                    },
+                    new
+                    {
+                        Id = -3,
+                        Name = "CollectionDelete"
+                    },
+                    new
+                    {
+                        Id = -4,
+                        Name = "RecordCreate"
+                    },
+                    new
+                    {
+                        Id = -5,
+                        Name = "RecordDelete"
+                    },
+                    new
+                    {
+                        Id = -6,
+                        Name = "RecordUpdate"
+                    },
+                    new
+                    {
+                        Id = -7,
+                        Name = "ImageCreate"
+                    },
+                    new
+                    {
+                        Id = -8,
+                        Name = "ImageUpdate"
+                    },
+                    new
+                    {
+                        Id = -9,
+                        Name = "UserUpdate"
+                    },
+                    new
+                    {
+                        Id = -10,
+                        Name = "CollectionDeleteWithMove"
+                    },
+                    new
+                    {
+                        Id = -11,
+                        Name = "PasswordChange"
+                    });
+            });
+
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>
             {
                 b.Property<int>("Id")
@@ -473,6 +591,33 @@ namespace record_keep_api.Migrations
                     .HasConstraintName("style_genre_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.UserActivity", b =>
+            {
+                b.HasOne("record_keep_api.DBO.UserActivityAction", "Action")
+                    .WithMany("Activities")
+                    .HasForeignKey("ActionId")
+                    .HasConstraintName("user_activity_action_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("record_keep_api.DBO.Collection", "Collection")
+                    .WithMany("Activities")
+                    .HasForeignKey("CollectionId")
+                    .HasConstraintName("user_activity_collection_id_fkey");
+
+                b.HasOne("record_keep_api.DBO.UserData", "Owner")
+                    .WithMany("UserActivities")
+                    .HasForeignKey("OwnerId")
+                    .HasConstraintName("user_activity_owner_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("record_keep_api.DBO.Record", "Record")
+                    .WithMany("RecordActivities")
+                    .HasForeignKey("RecordId")
+                    .HasConstraintName("user_activity_record_id_fkey");
             });
 
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>

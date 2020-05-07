@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using record_keep_api.DBO;
+using record_keep_api.Models.UserActivity;
 
 namespace record_keep_api.Migrations
 {
@@ -116,6 +117,64 @@ namespace record_keep_api.Migrations
                     Id = -3,
                     Name = "Contemporary R&B",
                     GenreId = -3
+                }
+            );
+
+            modelBuilder.Entity<UserActivityAction>().HasData(
+                new UserActivityAction
+                {
+                    Id = -1,
+                    Name = UserActivityActionName.CollectionCreate
+                },
+                new UserActivityAction
+                {
+                    Id = -2,
+                    Name = UserActivityActionName.CollectionUpdate
+                },
+                new UserActivityAction
+                {
+                    Id = -3,
+                    Name = UserActivityActionName.CollectionDelete
+                },
+                new UserActivityAction
+                {
+                    Id = -4,
+                    Name = UserActivityActionName.RecordCreate
+                },
+                new UserActivityAction
+                {
+                    Id = -5,
+                    Name = UserActivityActionName.RecordDelete
+                },
+                new UserActivityAction
+                {
+                    Id = -6,
+                    Name = UserActivityActionName.RecordUpdate
+                },
+                new UserActivityAction
+                {
+                    Id = -7,
+                    Name = UserActivityActionName.ImageCreate
+                },
+                new UserActivityAction
+                {
+                    Id = -8,
+                    Name = UserActivityActionName.ImageUpdate
+                },
+                new UserActivityAction
+                {
+                    Id = -9,
+                    Name = UserActivityActionName.UserUpdate
+                },
+                new UserActivityAction
+                {
+                    Id = -10,
+                    Name = UserActivityActionName.CollectionDeleteWithMove
+                },
+                new UserActivityAction
+                {
+                    Id = -11,
+                    Name = UserActivityActionName.PasswordChange
                 }
             );
         }

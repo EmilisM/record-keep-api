@@ -10,6 +10,8 @@ using record_keep_api.DBO;
 using record_keep_api.Error;
 using record_keep_api.Models.Error.User;
 using record_keep_api.Models.User;
+using record_keep_api.Models.UserActivity;
+using record_keep_api.Services;
 using record_keep_auth_service;
 
 namespace record_keep_api.Controllers
@@ -20,10 +22,13 @@ namespace record_keep_api.Controllers
     {
         private readonly IAuthService _authService;
         private readonly DatabaseContext _databaseContext;
+        private readonly IUserActivityService _userActivityService;
 
-        public UserController(DatabaseContext context, IAuthService authService)
+        public UserController(DatabaseContext context, IAuthService authService,
+            IUserActivityService userActivityService)
         {
             _authService = authService;
+            _userActivityService = userActivityService;
             _databaseContext = context;
         }
 
@@ -92,6 +97,8 @@ namespace record_keep_api.Controllers
 
             await _databaseContext.SaveChangesAsync();
 
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.PasswordChange, storedUser.Id);
+
             return Ok();
         }
 
@@ -102,7 +109,14 @@ namespace record_keep_api.Controllers
         {
             var subjectId = User.GetSubjectId();
 
-            var storedUser = await _databaseContext.UserData.Include(u => u.ProfileImage)
+            var storedUser = await _databaseContext.UserData
+                .Include(u => u.ProfileImage)
+                .Include(u => u.UserActivities)
+                .ThenInclude(u => u.Action)
+                .Include(u => u.UserActivities)
+                .ThenInclude(u => u.Collection)
+                .Include(u => u.UserActivities)
+                .ThenInclude(u => u.Record)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
@@ -153,6 +167,8 @@ namespace record_keep_api.Controllers
             storedUser.ProfileImageId = userInfoNew.ImageId;
 
             await _databaseContext.SaveChangesAsync();
+
+            await _userActivityService.CreateActivityAsync(UserActivityActionName.UserUpdate, storedUser.Id);
 
             return Ok(storedUser);
         }
