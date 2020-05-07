@@ -30,7 +30,7 @@ namespace record_keep_api.Services
                 Record = record,
                 Collection = collection,
                 Action = storedAction,
-                TimeStamp = DateTime.UtcNow
+                Timestamp = DateTime.UtcNow
             };
 
             await _databaseContext.UserActivities.AddAsync(userActivity);

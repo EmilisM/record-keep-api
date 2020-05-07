@@ -249,9 +249,10 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
 
-                entity.Property(e => e.TimeStamp)
+                entity.Property(e => e.Timestamp)
                     .HasColumnName("time_stamp")
-                    .HasColumnType("date")
+                    .HasColumnType("timestamp with time zone")
+                    .HasDefaultValueSql($"now() at time zone 'utc'")
                     .IsRequired();
 
                 entity.Property(e => e.OwnerId).HasColumnName("owner_id");

@@ -373,9 +373,9 @@ namespace record_keep_api.Migrations
                     .HasColumnName("record_id")
                     .HasColumnType("integer");
 
-                b.Property<DateTime>("TimeStamp")
+                b.Property<DateTime>("Timestamp")
                     .HasColumnName("time_stamp")
-                    .HasColumnType("date");
+                    .HasColumnType("timestamp");
 
                 b.HasKey("Id");
 

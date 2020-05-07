@@ -7,7 +7,7 @@ namespace record_keep_api.DBO
     {
         public int Id { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+        public DateTime Timestamp { get; set; }
 
         [JsonIgnore] public int OwnerId { get; set; }
         [JsonIgnore] public UserData Owner { get; set; }
