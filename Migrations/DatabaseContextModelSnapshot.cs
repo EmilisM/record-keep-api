@@ -374,8 +374,10 @@ namespace record_keep_api.Migrations
                     .HasColumnType("integer");
 
                 b.Property<DateTime>("Timestamp")
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("time_stamp")
-                    .HasColumnType("timestamp");
+                    .HasColumnType("timestamp with time zone")
+                    .HasDefaultValueSql("now() at time zone 'utc'");
 
                 b.HasKey("Id");
 
@@ -605,7 +607,8 @@ namespace record_keep_api.Migrations
                 b.HasOne("record_keep_api.DBO.Collection", "Collection")
                     .WithMany("Activities")
                     .HasForeignKey("CollectionId")
-                    .HasConstraintName("user_activity_collection_id_fkey");
+                    .HasConstraintName("user_activity_collection_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 b.HasOne("record_keep_api.DBO.UserData", "Owner")
                     .WithMany("UserActivities")
@@ -615,9 +618,10 @@ namespace record_keep_api.Migrations
                     .IsRequired();
 
                 b.HasOne("record_keep_api.DBO.Record", "Record")
-                    .WithMany("RecordActivities")
+                    .WithMany("Activities")
                     .HasForeignKey("RecordId")
-                    .HasConstraintName("user_activity_record_id_fkey");
+                    .HasConstraintName("user_activity_record_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity("record_keep_api.DBO.UserData", b =>

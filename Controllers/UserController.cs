@@ -115,6 +115,7 @@ namespace record_keep_api.Controllers
                 .ThenInclude(u => u.Action)
                 .Include(u => u.UserActivities)
                 .ThenInclude(u => u.Collection)
+                .ThenInclude(u => u.Image)
                 .Include(u => u.UserActivities)
                 .ThenInclude(u => u.Record)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
