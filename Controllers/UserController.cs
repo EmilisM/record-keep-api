@@ -118,6 +118,7 @@ namespace record_keep_api.Controllers
                 .ThenInclude(u => u.Image)
                 .Include(u => u.UserActivities)
                 .ThenInclude(u => u.Record)
+                .ThenInclude(u => u.Image)
                 .FirstOrDefaultAsync(UserIdPredicate(subjectId));
 
             if (storedUser == null)
