@@ -98,51 +98,41 @@ namespace record_keep_api.Migrations
                     new
                     {
                         Id = -4,
-                        Name = "Funk"
-                    },
-                    new
-                    {
-                        Id = -5,
                         Name = "Country"
                     },
                     new
                     {
-                        Id = -6,
+                        Id = -5,
                         Name = "Latin"
                     },
                     new
                     {
-                        Id = -7,
-                        Name = "Reggae"
-                    },
-                    new
-                    {
-                        Id = -8,
+                        Id = -6,
                         Name = "Hip hop"
                     },
                     new
                     {
-                        Id = -9,
+                        Id = -7,
                         Name = "Jazz"
                     },
                     new
                     {
-                        Id = -10,
+                        Id = -8,
                         Name = "Pop"
                     },
                     new
                     {
-                        Id = -11,
+                        Id = -9,
                         Name = "Classical"
                     },
                     new
                     {
-                        Id = -12,
+                        Id = -10,
                         Name = "Avant-garde"
                     },
                     new
                     {
-                        Id = -13,
+                        Id = -11,
                         Name = "Blues"
                     });
             });
@@ -343,8 +333,470 @@ namespace record_keep_api.Migrations
                     new
                     {
                         Id = -3,
+                        GenreId = -2,
+                        Name = "Downtempo"
+                    },
+                    new
+                    {
+                        Id = -4,
+                        GenreId = -2,
+                        Name = "Drum and bass"
+                    },
+                    new
+                    {
+                        Id = -5,
+                        GenreId = -2,
+                        Name = "Dub"
+                    },
+                    new
+                    {
+                        Id = -6,
+                        GenreId = -2,
+                        Name = "Electroacoustic"
+                    },
+                    new
+                    {
+                        Id = -7,
+                        GenreId = -2,
+                        Name = "Electronica"
+                    },
+                    new
+                    {
+                        Id = -8,
+                        GenreId = -2,
+                        Name = "House"
+                    },
+                    new
+                    {
+                        Id = -9,
+                        GenreId = -2,
+                        Name = "Industrial"
+                    },
+                    new
+                    {
+                        Id = -10,
+                        GenreId = -2,
+                        Name = "Jungle"
+                    },
+                    new
+                    {
+                        Id = -11,
+                        GenreId = -2,
+                        Name = "Techno"
+                    },
+                    new
+                    {
+                        Id = -12,
+                        GenreId = -2,
+                        Name = "UK garage"
+                    },
+                    new
+                    {
+                        Id = -13,
+                        GenreId = -1,
+                        Name = "Alternative rock"
+                    },
+                    new
+                    {
+                        Id = -14,
+                        GenreId = -1,
+                        Name = "Experimental rock"
+                    },
+                    new
+                    {
+                        Id = -15,
+                        GenreId = -1,
+                        Name = "Heavy metal"
+                    },
+                    new
+                    {
+                        Id = -16,
+                        GenreId = -1,
+                        Name = "Punk rock"
+                    },
+                    new
+                    {
+                        Id = -17,
+                        GenreId = -1,
+                        Name = "Rap rock"
+                    },
+                    new
+                    {
+                        Id = -18,
+                        GenreId = -1,
+                        Name = "New wave"
+                    },
+                    new
+                    {
+                        Id = -19,
+                        GenreId = -1,
+                        Name = "Psychedelic rock"
+                    },
+                    new
+                    {
+                        Id = -20,
+                        GenreId = -1,
+                        Name = "Progressive rock"
+                    },
+                    new
+                    {
+                        Id = -21,
                         GenreId = -3,
                         Name = "Contemporary R&B"
+                    },
+                    new
+                    {
+                        Id = -22,
+                        GenreId = -3,
+                        Name = "Disco"
+                    },
+                    new
+                    {
+                        Id = -23,
+                        GenreId = -3,
+                        Name = "Funk"
+                    },
+                    new
+                    {
+                        Id = -24,
+                        GenreId = -3,
+                        Name = "Soul"
+                    },
+                    new
+                    {
+                        Id = -25,
+                        GenreId = -3,
+                        Name = "Alternative R&B"
+                    },
+                    new
+                    {
+                        Id = -27,
+                        GenreId = -4,
+                        Name = "Classic country"
+                    },
+                    new
+                    {
+                        Id = -28,
+                        GenreId = -4,
+                        Name = "Country blues"
+                    },
+                    new
+                    {
+                        Id = -29,
+                        GenreId = -4,
+                        Name = "Country rock"
+                    },
+                    new
+                    {
+                        Id = -30,
+                        GenreId = -4,
+                        Name = "Country pop"
+                    },
+                    new
+                    {
+                        Id = -31,
+                        GenreId = -4,
+                        Name = "Instrumental country"
+                    },
+                    new
+                    {
+                        Id = -32,
+                        GenreId = -4,
+                        Name = "Texas country"
+                    },
+                    new
+                    {
+                        Id = -33,
+                        GenreId = -5,
+                        Name = "Brazilian"
+                    },
+                    new
+                    {
+                        Id = -34,
+                        GenreId = -5,
+                        Name = "Latin jazz"
+                    },
+                    new
+                    {
+                        Id = -35,
+                        GenreId = -5,
+                        Name = "Latin rock"
+                    },
+                    new
+                    {
+                        Id = -36,
+                        GenreId = -5,
+                        Name = "Reggaeton"
+                    },
+                    new
+                    {
+                        Id = -37,
+                        GenreId = -5,
+                        Name = "Regional Mexican"
+                    },
+                    new
+                    {
+                        Id = -38,
+                        GenreId = -5,
+                        Name = "Traditional"
+                    },
+                    new
+                    {
+                        Id = -39,
+                        GenreId = -5,
+                        Name = "Tropical"
+                    },
+                    new
+                    {
+                        Id = -40,
+                        GenreId = -6,
+                        Name = "Alternative hip hop"
+                    },
+                    new
+                    {
+                        Id = -41,
+                        GenreId = -6,
+                        Name = "Experimental hip hop"
+                    },
+                    new
+                    {
+                        Id = -42,
+                        GenreId = -6,
+                        Name = "British hip hop"
+                    },
+                    new
+                    {
+                        Id = -43,
+                        GenreId = -6,
+                        Name = "Cloud rap"
+                    },
+                    new
+                    {
+                        Id = -44,
+                        GenreId = -6,
+                        Name = "Conscious hip hop"
+                    },
+                    new
+                    {
+                        Id = -45,
+                        GenreId = -6,
+                        Name = "G-funk"
+                    },
+                    new
+                    {
+                        Id = -46,
+                        GenreId = -6,
+                        Name = "Gangsta rap"
+                    },
+                    new
+                    {
+                        Id = -47,
+                        GenreId = -6,
+                        Name = "Hardcore hip hop"
+                    },
+                    new
+                    {
+                        Id = -48,
+                        GenreId = -6,
+                        Name = "Grime"
+                    },
+                    new
+                    {
+                        Id = -49,
+                        GenreId = -6,
+                        Name = "Mumble rap"
+                    },
+                    new
+                    {
+                        Id = -50,
+                        GenreId = -6,
+                        Name = "Trap"
+                    },
+                    new
+                    {
+                        Id = -51,
+                        GenreId = -6,
+                        Name = "West Coast hip hop"
+                    },
+                    new
+                    {
+                        Id = -52,
+                        GenreId = -7,
+                        Name = "Avant-garde jazz"
+                    },
+                    new
+                    {
+                        Id = -53,
+                        GenreId = -7,
+                        Name = "Free jazz"
+                    },
+                    new
+                    {
+                        Id = -54,
+                        GenreId = -7,
+                        Name = "Swing"
+                    },
+                    new
+                    {
+                        Id = -55,
+                        GenreId = -7,
+                        Name = "Jazz fusion"
+                    },
+                    new
+                    {
+                        Id = -56,
+                        GenreId = -7,
+                        Name = "Smooth jazz"
+                    },
+                    new
+                    {
+                        Id = -57,
+                        GenreId = -7,
+                        Name = "Chamber jazz"
+                    },
+                    new
+                    {
+                        Id = -58,
+                        GenreId = -8,
+                        Name = "Baroque pop"
+                    },
+                    new
+                    {
+                        Id = -59,
+                        GenreId = -8,
+                        Name = "Europop"
+                    },
+                    new
+                    {
+                        Id = -60,
+                        GenreId = -8,
+                        Name = "Pop rock"
+                    },
+                    new
+                    {
+                        Id = -61,
+                        GenreId = -8,
+                        Name = "Psychedelic pop"
+                    },
+                    new
+                    {
+                        Id = -62,
+                        GenreId = -8,
+                        Name = "Indie pop"
+                    },
+                    new
+                    {
+                        Id = -63,
+                        GenreId = -8,
+                        Name = "K-pop"
+                    },
+                    new
+                    {
+                        Id = -64,
+                        GenreId = -8,
+                        Name = "Synthpop"
+                    },
+                    new
+                    {
+                        Id = -65,
+                        GenreId = -9,
+                        Name = "Ancient"
+                    },
+                    new
+                    {
+                        Id = -66,
+                        GenreId = -9,
+                        Name = "Early"
+                    },
+                    new
+                    {
+                        Id = -67,
+                        GenreId = -9,
+                        Name = "Modern"
+                    },
+                    new
+                    {
+                        Id = -68,
+                        GenreId = -9,
+                        Name = "Postmodern"
+                    },
+                    new
+                    {
+                        Id = -69,
+                        GenreId = -9,
+                        Name = "Contemporary"
+                    },
+                    new
+                    {
+                        Id = -70,
+                        GenreId = -10,
+                        Name = "Experimental"
+                    },
+                    new
+                    {
+                        Id = -71,
+                        GenreId = -10,
+                        Name = "Noise"
+                    },
+                    new
+                    {
+                        Id = -72,
+                        GenreId = -10,
+                        Name = "Musique concrète"
+                    },
+                    new
+                    {
+                        Id = -73,
+                        GenreId = -11,
+                        Name = "Blues rock"
+                    },
+                    new
+                    {
+                        Id = -74,
+                        GenreId = -11,
+                        Name = "Detroit blues"
+                    },
+                    new
+                    {
+                        Id = -75,
+                        GenreId = -11,
+                        Name = "Texas blues"
+                    },
+                    new
+                    {
+                        Id = -76,
+                        GenreId = -11,
+                        Name = "British blues"
+                    },
+                    new
+                    {
+                        Id = -77,
+                        GenreId = -11,
+                        Name = "Gospel blues"
+                    },
+                    new
+                    {
+                        Id = -78,
+                        GenreId = -11,
+                        Name = "Soul blues"
+                    },
+                    new
+                    {
+                        Id = -79,
+                        GenreId = -11,
+                        Name = "St. Louis blues"
+                    },
+                    new
+                    {
+                        Id = -80,
+                        GenreId = -11,
+                        Name = "Chicago blues"
+                    },
+                    new
+                    {
+                        Id = -81,
+                        GenreId = -11,
+                        Name = "Electric blues"
                     });
             });
 
