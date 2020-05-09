@@ -275,7 +275,7 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Activities)
                     .HasForeignKey(e => e.CollectionId)
                     .HasConstraintName("user_activity_collection_id_fkey")
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.SetNull);
 
                 entity.Property(e => e.RecordId).HasColumnName("record_id");
 
@@ -283,7 +283,7 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Activities)
                     .HasForeignKey(e => e.RecordId)
                     .HasConstraintName("user_activity_record_id_fkey")
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             modelBuilder.Seed();
