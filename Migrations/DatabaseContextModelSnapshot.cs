@@ -206,6 +206,18 @@ namespace record_keep_api.Migrations
                     .HasColumnName("owner_id")
                     .HasColumnType("integer");
 
+                b.Property<decimal?>("Rating")
+                    .HasColumnName("rating")
+                    .HasColumnType("numeric");
+
+                b.Property<int>("RecordFormatId")
+                    .HasColumnName("record_format_id")
+                    .HasColumnType("integer");
+
+                b.Property<string>("RecordLength")
+                    .HasColumnName("record_length")
+                    .HasColumnType("text");
+
                 b.Property<int>("RecordTypeId")
                     .HasColumnName("record_type_id")
                     .HasColumnType("integer");
@@ -222,12 +234,74 @@ namespace record_keep_api.Migrations
 
                 b.HasIndex("OwnerId");
 
+                b.HasIndex("RecordFormatId");
+
                 b.HasIndex("RecordTypeId");
 
                 b.ToTable("record");
             });
 
-            modelBuilder.Entity("record_keep_api.DBO.RecordStyles", b =>
+            modelBuilder.Entity("record_keep_api.DBO.RecordFormat", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id")
+                    .HasColumnType("integer")
+                    .HasAnnotation("Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Name")
+                    .IsUnique()
+                    .HasName("record_format_name_key");
+
+                b.ToTable("record_format");
+
+                b.HasData(
+                    new
+                    {
+                        Id = -1,
+                        Name = "LP"
+                    },
+                    new
+                    {
+                        Id = -2,
+                        Name = "CD"
+                    },
+                    new
+                    {
+                        Id = -3,
+                        Name = "Vinyl"
+                    },
+                    new
+                    {
+                        Id = -4,
+                        Name = "Tape"
+                    },
+                    new
+                    {
+                        Id = -5,
+                        Name = "7\""
+                    },
+                    new
+                    {
+                        Id = -6,
+                        Name = "12\""
+                    },
+                    new
+                    {
+                        Id = -7,
+                        Name = "File"
+                    });
+            });
+
+            modelBuilder.Entity("record_keep_api.DBO.RecordStyle", b =>
             {
                 b.Property<int>("RecordId")
                     .HasColumnName("record_id")
@@ -270,22 +344,17 @@ namespace record_keep_api.Migrations
                     new
                     {
                         Id = -1,
-                        Name = "LP"
+                        Name = "Album"
                     },
                     new
                     {
                         Id = -2,
-                        Name = "CD"
+                        Name = "Single"
                     },
                     new
                     {
                         Id = -3,
-                        Name = "Vinyl"
-                    },
-                    new
-                    {
-                        Id = -4,
-                        Name = "Tape"
+                        Name = "Compilation"
                     });
             });
 
@@ -1012,6 +1081,13 @@ namespace record_keep_api.Migrations
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
+                b.HasOne("record_keep_api.DBO.RecordFormat", "RecordFormat")
+                    .WithMany("Records")
+                    .HasForeignKey("RecordFormatId")
+                    .HasConstraintName("record_record_format_id_fkey")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
                 b.HasOne("record_keep_api.DBO.RecordType", "RecordType")
                     .WithMany("Records")
                     .HasForeignKey("RecordTypeId")
@@ -1020,19 +1096,19 @@ namespace record_keep_api.Migrations
                     .IsRequired();
             });
 
-            modelBuilder.Entity("record_keep_api.DBO.RecordStyles", b =>
+            modelBuilder.Entity("record_keep_api.DBO.RecordStyle", b =>
             {
                 b.HasOne("record_keep_api.DBO.Record", "Record")
-                    .WithMany("RecordStyles")
+                    .WithMany("RecordStyle")
                     .HasForeignKey("RecordId")
-                    .HasConstraintName("record_styles_record_id_fkey")
+                    .HasConstraintName("record_style_record_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
 
                 b.HasOne("record_keep_api.DBO.Style", "Style")
                     .WithMany("RecordStyles")
                     .HasForeignKey("StyleId")
-                    .HasConstraintName("record_styles_style_id_fkey")
+                    .HasConstraintName("record_style_style_id_fkey")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
             });

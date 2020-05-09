@@ -21,9 +21,10 @@ namespace record_keep_api.DBO
         public DbSet<Record> Record { get; set; }
         public DbSet<UserData> UserData { get; set; }
         public DbSet<RecordType> RecordType { get; set; }
+        public DbSet<RecordFormat> RecordFormat { get; set; }
         public DbSet<Genre> Genre { get; set; }
         public DbSet<Style> Style { get; set; }
-        public DbSet<RecordStyles> RecordStyles { get; set; }
+        public DbSet<RecordStyle> RecordStyle { get; set; }
         public DbSet<UserActivity> UserActivities { get; set; }
         public DbSet<UserActivityAction> UserActivityActions { get; set; }
 
@@ -89,6 +90,11 @@ namespace record_keep_api.DBO
 
                 entity.Property(e => e.CollectionId).HasColumnName("collection_id");
 
+                entity.Property(e => e.Rating).HasColumnName("rating");
+
+                entity.Property(e => e.RecordLength)
+                    .HasColumnName("record_length");
+
                 entity.HasOne(e => e.Collection)
                     .WithMany(e => e.Records)
                     .HasForeignKey(d => d.CollectionId)
@@ -114,6 +120,13 @@ namespace record_keep_api.DBO
                     .WithMany(e => e.Records)
                     .HasForeignKey(e => e.RecordTypeId)
                     .HasConstraintName("record_record_type_id_fkey");
+
+                entity.Property(e => e.RecordFormatId).HasColumnName("record_format_id");
+
+                entity.HasOne(e => e.RecordFormat)
+                    .WithMany(e => e.Records)
+                    .HasForeignKey(e => e.RecordFormatId)
+                    .HasConstraintName("record_record_format_id_fkey");
 
                 entity.Property(e => e.Year)
                     .HasColumnName("year")
@@ -172,6 +185,21 @@ namespace record_keep_api.DBO
                     .IsRequired();
             });
 
+            modelBuilder.Entity<RecordFormat>(entity =>
+            {
+                entity.ToTable("record_format");
+
+                entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd();
+
+                entity.HasIndex(e => e.Name)
+                    .HasName("record_format_name_key")
+                    .IsUnique();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .IsRequired();
+            });
+
             modelBuilder.Entity<Genre>(entity =>
             {
                 entity.ToTable("genre");
@@ -209,7 +237,7 @@ namespace record_keep_api.DBO
                     .HasConstraintName("style_genre_id_fkey");
             });
 
-            modelBuilder.Entity<RecordStyles>(entity =>
+            modelBuilder.Entity<RecordStyle>(entity =>
             {
                 entity.ToTable("record_styles");
 
@@ -220,13 +248,13 @@ namespace record_keep_api.DBO
                 entity.HasKey(e => new {e.RecordId, e.StyleId});
 
                 entity.HasOne(e => e.Record)
-                    .WithMany(e => e.RecordStyles)
-                    .HasForeignKey(e => e.RecordId).HasConstraintName("record_styles_record_id_fkey");
+                    .WithMany(e => e.RecordStyle)
+                    .HasForeignKey(e => e.RecordId).HasConstraintName("record_style_record_id_fkey");
 
                 entity.HasOne(e => e.Style)
                     .WithMany(e => e.RecordStyles)
                     .HasForeignKey(e => e.StyleId)
-                    .HasConstraintName("record_styles_style_id_fkey");
+                    .HasConstraintName("record_style_style_id_fkey");
             });
 
 

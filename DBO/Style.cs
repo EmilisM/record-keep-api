@@ -11,6 +11,6 @@ namespace record_keep_api.DBO
         [JsonIgnore] public int GenreId { get; set; }
         public Genre Genre { get; set; }
 
-        [JsonIgnore] public ICollection<RecordStyles> RecordStyles { get; set; }
+        [JsonIgnore] public ICollection<RecordStyle> RecordStyles { get; set; }
     }
 }

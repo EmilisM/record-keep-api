@@ -2,7 +2,7 @@
 
 namespace record_keep_api.DBO
 {
-    public class RecordStyles
+    public class RecordStyle
     {
         public int RecordId { get; set; }
         [JsonIgnore] public Record Record { get; set; }

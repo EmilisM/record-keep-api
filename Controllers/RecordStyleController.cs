@@ -13,11 +13,11 @@ namespace record_keep_api.Controllers
     [ApiController]
     [Route("/api/record/style")]
     [Authorize]
-    public class RecordStylesController : CustomControllerBase
+    public class RecordStyleController : CustomControllerBase
     {
         private readonly DatabaseContext _databaseContext;
 
-        public RecordStylesController(DatabaseContext databaseContext)
+        public RecordStyleController(DatabaseContext databaseContext)
         {
             _databaseContext = databaseContext;
         }
@@ -36,7 +36,7 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
             }
 
-            var recordStyles = _databaseContext.RecordStyles
+            var recordStyles = _databaseContext.RecordStyle
                 .Include(rs => rs.Record)
                 .Include(rs => rs.Style)
                 .ThenInclude(s => s.Genre)

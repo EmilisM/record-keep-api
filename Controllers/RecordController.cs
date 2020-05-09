@@ -44,7 +44,8 @@ namespace record_keep_api.Controllers
             var records = _databaseContext.Record
                 .Include(r => r.Image)
                 .Include(r => r.RecordType)
-                .Include(r => r.RecordStyles)
+                .Include(r => r.RecordFormat)
+                .Include(r => r.RecordStyle)
                 .ThenInclude(rs => rs.Style)
                 .ThenInclude(s => s.Genre)
                 .Where(record => record.OwnerId == user.Id && (string.IsNullOrWhiteSpace(collectionId) ||
@@ -74,7 +75,8 @@ namespace record_keep_api.Controllers
             var record = await _databaseContext.Record
                 .Include(r => r.Image)
                 .Include(r => r.RecordType)
-                .Include(r => r.RecordStyles)
+                .Include(r => r.RecordFormat)
+                .Include(r => r.RecordStyle)
                 .ThenInclude(rs => rs.Style)
                 .ThenInclude(s => s.Genre)
                 .FirstOrDefaultAsync(r => r.OwnerId == user.Id && r.Id == id);
@@ -109,13 +111,17 @@ namespace record_keep_api.Controllers
                 await _databaseContext.RecordType
                     .FirstOrDefaultAsync(rt => rt.Id == model.RecordTypeId);
 
+            var storedRecordFormat = await _databaseContext.RecordFormat.FirstOrDefaultAsync(
+                rt => rt.Id == model.RecordFormatId);
+
             var storedImage =
                 await _databaseContext.Image
                     .FirstOrDefaultAsync(i => i.Id == model.ImageId && i.CreatorId == user.Id);
 
             var storedStyles = _databaseContext.Style.Where(s => model.StyleIds.Contains(s.Id));
 
-            if (storedCollection == null || storedRecordType == null || storedStyles == null)
+            if (storedCollection == null || storedRecordType == null || storedStyles == null ||
+                storedRecordFormat == null)
             {
                 throw new HttpResponseException(null, HttpStatusCode.BadRequest);
             }
@@ -130,19 +136,21 @@ namespace record_keep_api.Controllers
                 CreationDate = DateTime.UtcNow,
                 ImageId = storedImage?.Id,
                 RecordTypeId = storedRecordType.Id,
+                RecordFormatId = storedRecordFormat.Id,
                 Label = model.Label,
                 Year = model.Year,
+                RecordLength = model.RecordLength,
             };
 
             await _databaseContext.Record.AddAsync(newRecord);
 
-            var newRecordStyles = storedStyles.Select(s => new RecordStyles
+            var newRecordStyles = storedStyles.Select(s => new RecordStyle
             {
                 Record = newRecord,
                 StyleId = s.Id
             });
 
-            await _databaseContext.RecordStyles.AddRangeAsync(newRecordStyles);
+            await _databaseContext.RecordStyle.AddRangeAsync(newRecordStyles);
 
             await _databaseContext.SaveChangesAsync();
 
@@ -201,9 +209,10 @@ namespace record_keep_api.Controllers
             var recordToUpdate = await _databaseContext.Record
                 .Include(r => r.Image)
                 .Include(r => r.RecordType)
+                .Include(r => r.RecordFormat)
                 .FirstOrDefaultAsync(r => r.Id == id && r.OwnerId == user.Id);
 
-            var recordStyles = _databaseContext.RecordStyles
+            var recordStyles = _databaseContext.RecordStyle
                 .Include(rs => rs.Style)
                 .Where(r => r.RecordId == id);
 
@@ -220,8 +229,11 @@ namespace record_keep_api.Controllers
                 Label = recordToUpdate.Label,
                 Year = recordToUpdate.Year,
                 RecordTypeId = recordToUpdate.RecordTypeId,
+                RecordFormatId = recordToUpdate.RecordFormatId,
                 ImageId = recordToUpdate.ImageId,
-                StyleIds = recordStyles.Select(rs => rs.StyleId).ToArray()
+                StyleIds = recordStyles.Select(rs => rs.StyleId).ToArray(),
+                Rating = recordToUpdate.Rating,
+                RecordLength = recordToUpdate.RecordLength
             };
 
             model.ApplyTo(newModel, ModelState);
@@ -241,27 +253,31 @@ namespace record_keep_api.Controllers
             var newRecordType = await _databaseContext.RecordType
                 .FirstOrDefaultAsync(rt => rt.Id == newModel.RecordTypeId);
 
+            var newRecordFormat = await _databaseContext.RecordFormat
+                .FirstOrDefaultAsync(rt => rt.Id == newModel.RecordFormatId);
+
             var newStyles = _databaseContext.Style
                 .Where(s => newModel.StyleIds.Contains(s.Id));
 
             var firstNewStyle = await newStyles.FirstOrDefaultAsync();
 
             if (newRecordType == null || newStyles.Count() != newModel.StyleIds.Length ||
-                firstNewStyle == null || !newStyles.All(s => s.GenreId == firstNewStyle.GenreId))
+                firstNewStyle == null || !newStyles.All(s => s.GenreId == firstNewStyle.GenreId) ||
+                newRecordFormat == null)
             {
                 throw new HttpResponseException(null, HttpStatusCode.BadRequest);
             }
 
             //TODO: Avoid dirty update
-            _databaseContext.RecordStyles.RemoveRange(recordStyles);
+            _databaseContext.RecordStyle.RemoveRange(recordStyles);
 
-            var newRecordStyles = newStyles.Select(s => new RecordStyles
+            var newRecordStyles = newStyles.Select(s => new RecordStyle
             {
                 RecordId = recordToUpdate.Id,
                 StyleId = s.Id
             });
 
-            await _databaseContext.RecordStyles.AddRangeAsync(newRecordStyles);
+            await _databaseContext.RecordStyle.AddRangeAsync(newRecordStyles);
 
             //TODO: Automapper
             recordToUpdate.Artist = newModel.Artist;
@@ -269,9 +285,12 @@ namespace record_keep_api.Controllers
             recordToUpdate.Description = newModel.Description;
             recordToUpdate.Label = newModel.Label;
             recordToUpdate.Year = newModel.Year;
+            recordToUpdate.Rating = newModel.Rating;
+            recordToUpdate.RecordLength = newModel.RecordLength;
 
             recordToUpdate.ImageId = newModel.ImageId;
             recordToUpdate.RecordTypeId = newRecordType.Id;
+            recordToUpdate.RecordFormatId = newRecordFormat.Id;
 
             await _databaseContext.SaveChangesAsync();
 

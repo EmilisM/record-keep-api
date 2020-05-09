@@ -14,6 +14,8 @@ namespace record_keep_api.DBO
         public DateTime CreationDate { get; set; }
         public DateTime Year { get; set; }
         public string Label { get; set; }
+        public decimal? Rating { get; set; }
+        public string RecordLength { get; set; }
 
         public int CollectionId { get; set; }
         [JsonIgnore] public Collection Collection { get; set; }
@@ -27,7 +29,10 @@ namespace record_keep_api.DBO
         [JsonIgnore] public int RecordTypeId { get; set; }
         public RecordType RecordType { get; set; }
 
-        public ICollection<RecordStyles> RecordStyles { get; set; }
+        [JsonIgnore] public int RecordFormatId { get; set; }
+        public RecordFormat RecordFormat { get; set; }
+
+        public ICollection<RecordStyle> RecordStyle { get; set; }
 
         [JsonIgnore] public ICollection<UserActivity> Activities { get; set; }
     }

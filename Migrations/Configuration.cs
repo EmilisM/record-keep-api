@@ -8,26 +8,59 @@ namespace record_keep_api.Migrations
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<RecordType>().HasData(
-                new RecordType
+            modelBuilder.Entity<RecordFormat>().HasData(
+                new RecordFormat
                 {
                     Id = -1,
                     Name = "LP",
                 },
-                new RecordType
+                new RecordFormat
                 {
                     Id = -2,
                     Name = "CD"
                 },
-                new RecordType
+                new RecordFormat
                 {
                     Id = -3,
                     Name = "Vinyl"
                 },
-                new RecordType
+                new RecordFormat
                 {
                     Id = -4,
                     Name = "Tape"
+                },
+                new RecordFormat
+                {
+                    Id = -5,
+                    Name = "7\""
+                },
+                new RecordFormat
+                {
+                    Id = -6,
+                    Name = "12\""
+                },
+                new RecordFormat
+                {
+                    Id = -7,
+                    Name = "File"
+                }
+            );
+
+            modelBuilder.Entity<RecordType>().HasData(
+                new RecordType
+                {
+                    Id = -1,
+                    Name = "Album",
+                },
+                new RecordType
+                {
+                    Id = -2,
+                    Name = "Single"
+                },
+                new RecordType
+                {
+                    Id = -3,
+                    Name = "Compilation"
                 }
             );
 
