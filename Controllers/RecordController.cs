@@ -177,7 +177,7 @@ namespace record_keep_api.Controllers
             var record =
                 _databaseContext.Record.Where(r => id.Contains(r.Id) && r.OwnerId == user.Id).ToList();
 
-            if (!record.Select(r => r.Id).SequenceEqual(id))
+            if (id.Length != record.Count)
             {
                 throw new HttpResponseException(null, HttpStatusCode.NotFound);
             }
