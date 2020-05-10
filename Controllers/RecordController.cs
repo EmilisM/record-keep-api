@@ -161,8 +161,7 @@ namespace record_keep_api.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
-        public async Task<IActionResult> DeleteRecord(int id)
+        public async Task<IActionResult> DeleteRecord([FromQuery] int[] id)
         {
             CustomValidation();
 
@@ -175,14 +174,15 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.Unauthorized);
             }
 
-            var record = await _databaseContext.Record.FirstOrDefaultAsync(r => r.Id == id && r.OwnerId == user.Id);
+            var record =
+                _databaseContext.Record.Where(r => id.Contains(r.Id) && r.OwnerId == user.Id).ToList();
 
-            if (record == null)
+            if (!record.Select(r => r.Id).SequenceEqual(id))
             {
                 throw new HttpResponseException(null, HttpStatusCode.NotFound);
             }
 
-            _databaseContext.Record.Remove(record);
+            _databaseContext.Record.RemoveRange(record);
 
             await _databaseContext.SaveChangesAsync();
 
