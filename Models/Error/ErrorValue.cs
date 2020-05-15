@@ -1,4 +1,4 @@
-﻿namespace record_keep_api.Models
+﻿namespace record_keep_api.Models.Error
 {
     public class ErrorValue
     {

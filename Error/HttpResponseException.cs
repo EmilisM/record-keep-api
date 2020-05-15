@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using record_keep_api.Models;
+using record_keep_api.Models.Error;
 
 namespace record_keep_api.Error
 {
