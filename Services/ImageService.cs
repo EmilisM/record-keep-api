@@ -14,21 +14,40 @@ namespace record_keep_api.Services
             double percentageWidth,
             double percentageHeight)
         {
-            var imageSource = await Base64ToBitmapAsync(data);
+            if (data == null || percentageX > 100 || percentageY > 100 || percentageHeight > 100 ||
+                percentageWidth > 100 ||
+                percentageX < 0 || percentageY < 0 || percentageHeight < 0 || percentageWidth < 0)
+            {
+                return null;
+            }
 
-            var actualHeight = imageSource.Height;
-            var actualWidth = imageSource.Width;
+            try
+            {
+                var imageSource = await Base64ToBitmapAsync(data);
 
-            var x = (int) Math.Round((percentageX / 100d) * actualWidth);
-            var y = (int) Math.Round((percentageY / 100d) * actualHeight);
+                var actualHeight = imageSource.Height;
+                var actualWidth = imageSource.Width;
 
-            var height = (int) Math.Round((percentageHeight / 100d) * actualHeight);
-            var width = (int) Math.Round((percentageWidth / 100d) * actualWidth);
+                var x = (int) Math.Round((percentageX / 100d) * actualWidth);
+                var y = (int) Math.Round((percentageY / 100d) * actualHeight);
 
-            var rectangle = new Rectangle(x, y, width, height);
-            var dest = new Bitmap(imageSource.Clone(rectangle, imageSource.PixelFormat), 128, 128);
+                var height = (int) Math.Round((percentageHeight / 100d) * actualHeight);
+                var width = (int) Math.Round((percentageWidth / 100d) * actualWidth);
 
-            return BitmapToBase64(dest);
+                if (x + width > actualWidth || y + height > actualHeight)
+                {
+                    return null;
+                }
+
+                var rectangle = new Rectangle(x, y, width, height);
+                var dest = new Bitmap(imageSource.Clone(rectangle, imageSource.PixelFormat), 128, 128);
+
+                return BitmapToBase64(dest);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         private static async Task<Bitmap> Base64ToBitmapAsync(string base64String)

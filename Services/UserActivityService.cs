@@ -20,7 +20,13 @@ namespace record_keep_api.Services
             Record record = null,
             int? recordId = null)
         {
-            var storedAction = await _databaseContext.UserActivityActions.FirstAsync(u => u.Name == action);
+            var storedAction = await _databaseContext.UserActivityActions.FirstOrDefaultAsync(u => u.Name == action);
+
+            if (storedAction == null)
+            {
+                throw new Exception(
+                    "Database missing required activity action configurations or provided action is missing");
+            }
 
             var userActivity = new UserActivity
             {

@@ -5,7 +5,7 @@ using record_keep_api.Models.UserActivity;
 
 namespace record_keep_api.DBO
 {
-    public class UserActivityAction
+    public partial class UserActivityAction
     {
         public int Id { get; set; }
 

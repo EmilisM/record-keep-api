@@ -17,12 +17,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\record-keep-auth-service\bin\Release\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
-    <Reference Include="record-keep-auth-service, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\record-keep-auth-service\bin\Release\record-keep-auth-service.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\record-keep-auth-service\record-keep-auth-service.csproj" />
+    </ItemGroup>
 </Project>

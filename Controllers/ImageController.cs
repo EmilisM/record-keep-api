@@ -64,10 +64,17 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException();
             }
 
+            var imageData =
+                await _imageService.GetImageCroppedAsync(model.Data, model.X, model.Y, model.Width, model.Height);
+
+            if (imageData == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.BadRequest);
+            }
+
             var image = new Image
             {
-                Data =
-                    await _imageService.GetImageCroppedAsync(model.Data, model.X, model.Y, model.Width, model.Height),
+                Data = imageData,
                 CreatorId = storedUsed.Id
             };
 
@@ -103,8 +110,15 @@ namespace record_keep_api.Controllers
                 throw new HttpResponseException(null, HttpStatusCode.NotFound);
             }
 
-            image.Data =
+            var imageData =
                 await _imageService.GetImageCroppedAsync(model.Data, model.X, model.Y, model.Width, model.Height);
+
+            if (imageData == null)
+            {
+                throw new HttpResponseException(null, HttpStatusCode.BadRequest);
+            }
+
+            image.Data = imageData;
 
             await _context.SaveChangesAsync();
 
