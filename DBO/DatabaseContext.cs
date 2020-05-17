@@ -5,6 +5,7 @@ using record_keep_api.Models.UserActivity;
 
 namespace record_keep_api.DBO
 {
+    // ReSharper disable once PartialTypeWithSinglePart
     public partial class DatabaseContext : DbContext
     {
         public DatabaseContext()
@@ -319,6 +320,7 @@ namespace record_keep_api.DBO
             OnModelCreatingPartial(modelBuilder);
         }
 
+        // ReSharper disable once PartialMethodWithSinglePart
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

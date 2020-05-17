@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
-    public partial class Image
+    public class Image
     {
         public int Id { get; set; }
         public string Data { get; set; }

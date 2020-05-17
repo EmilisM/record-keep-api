@@ -4,12 +4,8 @@ using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
-    public partial class Collection
+    public class Collection
     {
-        public Collection()
-        {
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

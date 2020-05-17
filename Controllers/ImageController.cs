@@ -21,7 +21,7 @@ namespace record_keep_api.Controllers
         private readonly DatabaseContext _context;
         private readonly IUserActivityService _userActivityService;
 
-        public ImageController(IImageService imageService, DatabaseContext databaseContext, DatabaseContext context,
+        public ImageController(IImageService imageService, DatabaseContext context,
             IUserActivityService userActivityService)
         {
             _imageService = imageService;

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
-    public sealed partial class UserData
+    public sealed class UserData
     {
         [JsonIgnore] public int Id { get; set; }
 

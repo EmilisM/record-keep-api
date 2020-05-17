@@ -4,8 +4,7 @@ using Newtonsoft.Json;
 
 namespace record_keep_api.DBO
 {
-    // ReSharper disable once ClassNeverInstantiated.Global
-    public partial class Record
+    public class Record
     {
         public int Id { get; set; }
         public string Artist { get; set; }
